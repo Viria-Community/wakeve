@@ -1,0 +1,41 @@
+services:
+  app:
+    image: php:8.3-fpm
+    container_name: wakeve_app
+    volumes:
+      - ./api:/var/www/html
+    depends_on:
+      - postgres
+      - redis
+
+  nginx:
+    image: nginx:alpine
+    container_name: wakeve_nginx
+    ports:
+      - "8000:80"
+    volumes:
+      - ./api:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+
+  postgres:
+    image: postgis/postgis:16-3.4
+    container_name: wakeve_postgres
+    environment:
+      POSTGRES_DB: wakeve
+      POSTGRES_USER: wakeve
+      POSTGRES_PASSWORD: secret
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    container_name: wakeve_redis
+    ports:
+      - "6379:6379"
+
+volumes:
+  pgdata:
