@@ -1,6 +1,6 @@
 services:
   app:
-    image: php:8.4-fpm
+    build: ./docker/php
     container_name: wakeve_app
     volumes:
       - ./api:/var/www/html
