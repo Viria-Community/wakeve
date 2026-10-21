@@ -1,0 +1,12 @@
+/vendor
+/node_modules
+.env
+.env.*
+!.env.example
+*.sql
+*.sql.gz
+*.zip
+/public/hot
+/storage/*.key
+.idea
+.vscode

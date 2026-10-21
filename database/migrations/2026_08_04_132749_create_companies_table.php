@@ -1,0 +1,34 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('companies', function (Blueprint $table) {
+            $table->id();
+            $table->string('legal_name', 150);
+            $table->string('trade_name', 150)->nullable();
+            $table->string('rccm', 50)->nullable();
+            $table->string('nif', 50)->nullable();
+            $table->string('email', 150)->unique();
+            $table->string('phone', 30);
+            $table->string('address', 255)->nullable();
+            $table->string('city', 100)->nullable();
+            $table->enum('status', ['pending', 'validated', 'rejected', 'active', 'suspended'])
+                ->default('pending')
+                ->index();
+            $table->timestamp('validated_at')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('companies');
+    }
+};

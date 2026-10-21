@@ -1,0 +1,167 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+
+@theme {
+    --font-sans: 'Maiandra GD', Calibri, 'Segoe UI', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+:root {
+    --green: #087A5A;
+    --dark: #264653;
+    --pale: #e8f5f0;
+    --gold: #E9C46A;
+    --gold-pale: #fff7e5;
+    --warning: #F4A261;
+    --warning-pale: #fff1e5;
+    --bg: #FAF9F6;
+    --surface: #FFFFFF;
+    --text: #264653;
+    --muted: #596970;
+    --danger: #E63946;
+    --danger-text: #a32130;
+    --info: #264653;
+    --border: #dde3e2;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Maiandra GD", Calibri, "Segoe UI", Arial, sans-serif;
+}
+
+h1,
+h2,
+h3 {
+    font-family: Corbel, Calibri, "Segoe UI", Arial, sans-serif;
+    font-weight: 700;
+}
+
+main.content,
+.content,
+.page-shell {
+    color: var(--text);
+}
+
+.content h1,
+.content h2,
+.content h3,
+.dashboard-heading h1,
+.dashboard-heading h2 {
+    color: var(--text);
+    letter-spacing: -0.03em;
+}
+
+.btn,
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 42px;
+    padding: 0.7rem 1rem;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: var(--green);
+    color: #fff;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+}
+
+.btn:hover,
+.button:hover,
+.btn:focus-visible,
+.button:focus-visible {
+    background: #066348;
+    color: #fff;
+}
+
+.btn.secondary {
+    background: #fff;
+    border-color: var(--border);
+    color: var(--text);
+}
+
+.btn.secondary:hover,
+.btn.secondary:focus-visible {
+    background: var(--bg);
+    color: var(--text);
+}
+
+.card,
+.panel,
+.dashboard-card,
+.company-panel,
+.agency-card,
+.employee-card,
+.fleet-card,
+.doc-card,
+.detail-card,
+.summary-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: none;
+}
+
+.table-wrap,
+.dashboard-table-wrap,
+.document-scroll,
+.suspended-table-wrap {
+    overflow-x: auto;
+}
+
+.badge,
+.role-badge,
+.status-pill,
+.doc-status,
+.review-status,
+.scope-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.38rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.status-active,
+.status-valid,
+.status-validated,
+.health.valid,
+.doc-status.valid,
+.review-status.approved {
+    background: var(--pale);
+    color: #076047;
+}
+
+.status-pending,
+.doc-status.to_renew,
+.review-status.pending,
+.health.renew {
+    background: var(--gold-pale);
+    color: #765715;
+}
+
+.status-suspended,
+.status-to_renew,
+.health.expired,
+.doc-status.expired,
+.review-status.rejected {
+    background: #fff0f0;
+    color: var(--danger-text);
+}
+
+@media (max-width: 991.98px) {
+    .topbar {
+        flex-wrap: wrap;
+    }
+}

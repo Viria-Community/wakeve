@@ -1,0 +1,3 @@
+@extends(auth()->user()->isAdmin() ? 'layouts.admin' : 'layouts.app')
+@section('title','Modifier une unité - PNMG')
+@section('content') @include('fleet._styles') <div class="fleet-head"><div><div class="fleet-breadcrumb"><a href="{{ route('fleet-units.index') }}">Flotte nationale</a> › <a href="{{ route('fleet-units.show',$fleetUnit) }}">{{ $fleetUnit->registration_number ?: $fleetUnit->type }}</a> › Modification</div><h1>Modifier l’unité</h1><p>Mettre à jour la capacité, la disponibilité ou le statut.</p></div></div><form class="fleet-form" method="POST" action="{{ route('fleet-units.update',$fleetUnit) }}">@csrf @method('PUT') @include('fleet._form',['submitLabel'=>'Enregistrer les modifications'])</form>@endsection
