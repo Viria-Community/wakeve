@@ -25,6 +25,9 @@
                     @can('viewAny', \App\Models\FleetUnit::class)
                         <a @class(['active' => request()->routeIs('fleet-units.*', 'fleet-documents.*')]) href="{{ route('fleet-units.index') }}"><x-lucide-bus-front class="nav-icon" aria-hidden="true"/>Flotte</a>
                     @endcan
+                    @can('viewAny', \App\Models\Line::class)
+                        <a @class(['active' => request()->routeIs('lines.*', 'departures.*', 'fares.*', 'search.*', 'dashboard-offre.*')]) href="{{ route('lines.index') }}"><x-lucide-route class="nav-icon" aria-hidden="true"/>Offre de transport</a>
+                    @endcan
                 </div>
             </section>
 

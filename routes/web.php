@@ -11,16 +11,22 @@ use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CompanyStatusController;
 use App\Http\Controllers\CustomRoleController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DashboardOffreController;
+use App\Http\Controllers\DepartureController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\DocumentReviewController;
+use App\Http\Controllers\FareController;
 use App\Http\Controllers\EmployeeAccountController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\FleetUnitController;
+use App\Http\Controllers\LineController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\PlatformRoleController;
 use App\Http\Controllers\PlatformStaffController;
 use App\Http\Controllers\PublicApplicationStatusController;
 use App\Http\Controllers\PublicRegistrationController;
+use App\Http\Controllers\SearchController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'public.home')->name('home');
@@ -86,6 +92,34 @@ Route::middleware(['auth', 'active'])->group(function () {
         Route::resource('agencies', AgencyController::class)->except(['destroy']);
         Route::resource('employees', EmployeeController::class)->except(['destroy']);
         Route::resource('fleet-units', FleetUnitController::class)->except(['destroy']);
+
+        Route::get('/offre/lignes', [LineController::class, 'index'])->name('lines.index');
+        Route::get('/offre/lignes/creer', [LineController::class, 'create'])->name('lines.create');
+        Route::post('/offre/lignes', [LineController::class, 'store'])->name('lines.store');
+        Route::get('/offre/lignes/{line}', [LineController::class, 'show'])->name('lines.show');
+        Route::get('/offre/lignes/{line}/modifier', [LineController::class, 'edit'])->name('lines.edit');
+        Route::put('/offre/lignes/{line}', [LineController::class, 'update'])->name('lines.update');
+        Route::patch('/offre/lignes/{line}/statut', [LineController::class, 'updateStatus'])->name('lines.updateStatus');
+
+        Route::get('/offre/departs', [DepartureController::class, 'index'])->name('departures.index');
+        Route::get('/offre/departs/creer', [DepartureController::class, 'create'])->name('departures.create');
+        Route::post('/offre/departs', [DepartureController::class, 'store'])->name('departures.store');
+        Route::get('/offre/departs/{departure}', [DepartureController::class, 'show'])->name('departures.show');
+        Route::get('/offre/departs/{departure}/modifier', [DepartureController::class, 'edit'])->name('departures.edit');
+        Route::put('/offre/departs/{departure}', [DepartureController::class, 'update'])->name('departures.update');
+        Route::patch('/offre/departs/{departure}/annuler', [DepartureController::class, 'cancel'])->name('departures.cancel');
+
+        Route::get('/offre/lignes/{line}/tarifs', [FareController::class, 'index'])->name('fares.index');
+        Route::get('/offre/lignes/{line}/tarifs/creer', [FareController::class, 'create'])->name('fares.create');
+        Route::post('/offre/lignes/{line}/tarifs', [FareController::class, 'store'])->name('fares.store');
+        Route::get('/offre/lignes/{line}/tarifs/{fare}/modifier', [FareController::class, 'edit'])->name('fares.edit');
+        Route::put('/offre/lignes/{line}/tarifs/{fare}', [FareController::class, 'update'])->name('fares.update');
+        Route::patch('/offre/lignes/{line}/tarifs/{fare}/statut', [FareController::class, 'updateStatus'])->name('fares.updateStatus');
+
+        Route::get('/offre/recherche', [SearchController::class, 'index'])->name('search.index');
+
+        Route::get('/offre/tableau-de-bord', [DashboardOffreController::class, 'index'])->name('dashboard-offre.index');
+
         Route::get('/documents', [DocumentController::class, 'index'])->name('documents.index');
         Route::get('/documents/compagnies/{company}', [DocumentController::class, 'companyDocuments'])->name('documents.companies.show');
         Route::get('/documents/flotte/{fleetUnit}', [DocumentController::class, 'fleetDocuments'])->name('documents.fleet.show');
