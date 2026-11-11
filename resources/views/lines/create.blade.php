@@ -7,6 +7,7 @@
     @media(max-width:760px){.line-form-grid{grid-template-columns:1fr}.form-field.full{grid-column:auto}.form-footer{flex-direction:column-reverse}.form-footer .btn{width:100%}.form-note{margin:0;text-align:center}}
 </style>
 @endpush
+@section('content')
 
 @if($errors->any())
 <div class="form-errors" role="alert"><strong>Le formulaire contient des erreurs.</strong><ul>@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>
