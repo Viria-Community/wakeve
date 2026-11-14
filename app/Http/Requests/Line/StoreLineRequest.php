@@ -2,16 +2,35 @@
 
 namespace App\Http\Requests\Line;
 
+use App\Enums\CompanyStatus;
 use App\Models\Company;
 use App\Models\Line;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 
 class StoreLineRequest extends FormRequest
 {
     public function authorize(): bool
     {
         return $this->user()?->can('create', Line::class) ?? false;
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $places = collect($this->input('places', []))
+            ->values()
+            ->map(fn ($place, $index) => [
+                'place_id' => data_get($place, 'place_id'),
+                'stop_order' => $index,
+            ])
+            ->all();
+
+        $this->merge([
+            'company_id' => $this->user()->isAdmin()
+                ? $this->input('company_id')
+                : $this->user()->company_id,
+            'places' => $places,
+        ]);
     }
 
     public function rules(): array
@@ -39,70 +58,54 @@ class StoreLineRequest extends FormRequest
             'origin_place_id.exists' => 'L\'origine sélectionnée n\'existe pas.',
             'destination_place_id.required' => 'La destination est obligatoire.',
             'destination_place_id.exists' => 'La destination sélectionnée n\'existe pas.',
-            'places.required' => 'Au moins deux points de desserte sont obligatoires.',
-            'places.min' => 'Au moins deux points de desserte sont obligatoires.',
+            'places.required' => 'Au moins deux points desservis sont obligatoires.',
+            'places.min' => 'Au moins deux points desservis sont obligatoires.',
+            'places.*.place_id.required' => 'Chaque point desservi doit être choisi.',
+            'places.*.place_id.exists' => 'Un point desservi sélectionné n\'existe pas.',
         ];
     }
 
-    protected function prepareForValidation(): void
+    public function withValidator(Validator $validator): void
     {
-        $places = $this->input('places', []);
-        usort($places, fn ($a, $b) => ($a['stop_order'] ?? 0) - ($b['stop_order'] ?? 0));
-        $this->merge(['places' => array_values($places)]);
-    }
+        $validator->after(function (Validator $validator) {
+            $company = Company::find($this->input('company_id'));
 
-    public function after(): array
-    {
-        return [
-            function (): void {
-                $companyId = $this->route('company_id')
-                    ?? ($this->user()->isAdmin() ? $this->input('company_id') : $this->user()->company_id);
-                $company = Company::find($companyId);
+            if (! $company) {
+                $validator->errors()->add('company_id', 'La compagnie n\'existe pas.');
+                return;
+            }
 
-                if (!$company) {
-                    $this->errors()->add('company_id', 'La compagnie n\'existe pas.');
-                    return;
-                }
+            if (! in_array($company->status, [CompanyStatus::Validated, CompanyStatus::Active], true)) {
+                $validator->errors()->add('company_id', 'La compagnie doit être validée ou active.');
+            }
 
-                if (!$company->status->in([Company::STATUS_VALIDATED, Company::STATUS_ACTIVE])) {
-                    $this->errors()->add('company_id', 'La compagnie doit être validée ou active.');
-                }
+            if (! $company->transportModes()->whereKey($this->input('transport_mode_id'))->exists()) {
+                $validator->errors()->add('transport_mode_id', 'Ce mode de transport n\'est pas pratiqué par la compagnie.');
+            }
 
-                $mode = $company->transportModes()->whereKey($this->input('transport_mode_id'))->first();
-                if (!$mode) {
-                    $this->errors()->add('transport_mode_id', 'Ce mode de transport n\'est pas pratiqué par la compagnie.');
-                }
+            $origin = (string) $this->input('origin_place_id');
+            $destination = (string) $this->input('destination_place_id');
 
-                if ($this->input('origin_place_id') === $this->input('destination_place_id')) {
-                    $this->errors()->add('destination_place_id', 'L\'origine et la destination doivent être différentes.');
-                }
+            if ($origin !== '' && $origin === $destination) {
+                $validator->errors()->add('destination_place_id', 'L\'origine et la destination doivent être différentes.');
+            }
 
-                $places = $this->input('places', []);
-                $placeIds = array_column($places, 'place_id');
-                if (count($placeIds) !== count(array_unique($placeIds))) {
-                    $this->errors()->add('places', 'Un lieu ne peut apparaître qu\'une seule fois dans la liste.');
-                }
+            $placeIds = collect($this->input('places', []))
+                ->pluck('place_id')
+                ->map(fn ($id) => (string) $id)
+                ->all();
 
-                if (count($places) < 2) {
-                    $this->errors()->add('places', 'Au moins deux points de desserte sont obligatoires.');
-                }
+            if (count($placeIds) !== count(array_unique($placeIds))) {
+                $validator->errors()->add('places', 'Un lieu ne peut apparaître qu\'une seule fois dans les points desservis.');
+            }
 
-                $hasOrigin = in_array($this->input('origin_place_id'), $placeIds, true);
-                $hasDestination = in_array($this->input('destination_place_id'), $placeIds, true);
-                if (!$hasOrigin) {
-                    $this->errors()->add('origin_place_id', 'L\'origine doit figurer dans la liste des points desservis.');
-                }
-                if (!$hasDestination) {
-                    $this->errors()->add('destination_place_id', 'La destination doit figurer dans la liste des points desservis.');
-                }
+            if ($origin !== '' && ! in_array($origin, $placeIds, true)) {
+                $validator->errors()->add('origin_place_id', 'L\'origine doit figurer dans les points desservis.');
+            }
 
-                $stopOrders = array_column($places, 'stop_order');
-                sort($stopOrders);
-                $expectedOrders = range(0, count($places) - 1);
-                if ($stopOrders !== $expectedOrders) {
-                    $this->errors()->add('places', 'Les ordres de desserte doivent être consécutifs à partir de 0.');
-                }
-            },
-        ];
+            if ($destination !== '' && ! in_array($destination, $placeIds, true)) {
+                $validator->errors()->add('destination_place_id', 'La destination doit figurer dans les points desservis.');
+            }
+        });
     }
 }

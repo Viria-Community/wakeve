@@ -8,6 +8,7 @@
 </style>
 @endpush
 @section('content')
+<form method="POST" action="{{ route('fares.update', [$line, $fare]) }}">@csrf @method('PUT')
 
 @if($errors->any())
 <div class="form-errors" role="alert"><strong>Le formulaire contient des erreurs.</strong><ul>@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>
@@ -48,4 +49,5 @@
         <button class="btn" type="submit">Enregistrer les modifications</button>
     </div>
 </div>
+</form>
 @endsection

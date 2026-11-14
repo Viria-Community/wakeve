@@ -37,7 +37,7 @@
                     <td>{{ $line->destinationPlace->name ?? '—' }}</td>
                     <td>{{ $line->transportMode->label ?? '—' }}</td>
                     <td><span class="status-label status-{{ $line->status }}">{{ ['active'=>'Active','inactive'=>'Inactive'][$line->status] }}</span></td>
-                    <td><div style="display:flex;gap:8px"><a class="view-link" href="{{ route('lines.show',$line) }}">Consulter <x-lucide-arrow-right aria-hidden="true"/></a></div></td>
+                    <td><div style="display:flex;gap:8px"><a class="view-link" href="{{ route('lines.show',$line) }}">Consulter <x-lucide-arrow-right aria-hidden="true"/></a><a class="view-link" href="{{ route('fares.index', $line) }}">Tarifs</a></div></td>
                 </tr>
             @empty
                 <tr><td colspan="7" class="empty-row">Aucune ligne ne correspond aux critères.</td></tr>

@@ -16,7 +16,8 @@
     </div>
     <div style="display:flex;gap:8px">
         @can('update', $line)<a class="btn-action secondary" href="{{ route('lines.edit',$line) }}">Modifier <x-lucide-pencil aria-hidden="true"/></a>@endcan
-        @can('update', $line)<form method="POST" action="{{ route('lines.updateStatus',$line) }}" style="display:inline"><input type="hidden" name="_token" value="{{ csrf_token() }}"><button class="btn-action {{ $line->isActive() ? 'secondary' : 'danger' }}" type="submit">{{ $line->isActive() ? 'Désactiver' : 'Activer' }} <x-lucide-toggle-left aria-hidden="true"/></button></form>@endcan
+        @can('update', $line)<form method="POST" action="{{ route('lines.updateStatus', $line) }}" style="display:inline">@csrf @method('PATCH')<input type="hidden" name="status" value="{{ $line->isActive() ? 'inactive' : 'active' }}"><button class="btn-action {{ $line->isActive() ? 'secondary' : 'danger' }}" type="submit">{{ $line->isActive() ? 'Désactiver' : 'Activer' }} <x-lucide-toggle-left aria-hidden="true"/></button></form>@endcan
+        <a class="btn-action secondary" href="{{ route('fares.index', $line) }}">Gérer les tarifs</a>
         <a class="btn-action primary" href="{{ route('lines.index') }}">Retour <x-lucide-arrow-left aria-hidden="true"/></a>
     </div>
 </div>

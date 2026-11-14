@@ -8,6 +8,14 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateFareRequest extends FormRequest
 {
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'line_id' => $this->route('line')?->id,
+            'amount' => str_replace(',', '.', (string) $this->input('amount')),
+        ]);
+    }
+
     public function authorize(): bool
     {
         return $this->user()?->can('update', $this->route('fare')) ?? false;
@@ -19,6 +27,7 @@ class UpdateFareRequest extends FormRequest
             'line_id' => ['required', 'integer', 'exists:lines,id'],
             'amount' => ['required', 'numeric', 'min:0.01'],
             'fare_class' => ['nullable', 'string', 'max:50'],
+            'status' => ['required', 'in:active,inactive'],
         ];
     }
 
@@ -38,18 +47,18 @@ class UpdateFareRequest extends FormRequest
     public function after(): array
     {
         return [
-            function (): void {
+            function (\Illuminate\Validation\Validator $validator): void {
                 $fare = $this->route('fare');
                 $lineId = $this->input('line_id');
                 $line = Line::find($lineId);
 
                 if (!$line) {
-                    $this->errors()->add('line_id', 'La ligne n\'existe pas.');
+                    $validator->errors()->add('line_id', 'La ligne n\'existe pas.');
                     return;
                 }
 
                 if (!$line->isActive()) {
-                    $this->errors()->add('line_id', 'La ligne doit être active.');
+                    $validator->errors()->add('line_id', 'La ligne doit être active.');
                 }
 
                 $companyId = $this->user()->isAdmin()
@@ -57,7 +66,7 @@ class UpdateFareRequest extends FormRequest
                     : $this->user()->company_id;
 
                 if ($line->company_id !== $companyId) {
-                    $this->errors()->add('line_id', 'Vous ne pouvez pas gérer cette ligne.');
+                    $validator->errors()->add('line_id', 'Vous ne pouvez pas gérer cette ligne.');
                 }
             },
         ];

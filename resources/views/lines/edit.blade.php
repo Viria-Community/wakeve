@@ -8,13 +8,14 @@
 </style>
 @endpush
 @section('content')
+<form method="POST" action="{{ route('lines.update', $line) }}">@csrf @method('PUT')
 
 @if($errors->any())
 <div class="form-errors" role="alert"><strong>Le formulaire contient des erreurs.</strong><ul>@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>
 @endif
 
 <section class="form-section">
-    <div class="form-section-title"><span class="form-section-number">1</span><div><h2>Identification</h2><p>Informations permettant d\'identifier la ligne.</p></div></div>
+    <div class="form-section-title"><span class="form-section-number">1</span><div><h2>Identification</h2><p>Informations permettant d’identifier la ligne.</p></div></div>
     <div class="line-form-grid">
         <div class="form-field"><label for="label">Libellé <span class="required">*</span></label><input @class(['field-error' => $errors->has('label')]) id="label" name="label" value="{{ old('label',$line->label) }}" maxlength="150" required aria-invalid="{{ $errors->has('label') ? 'true' : 'false' }}">@error('label')<span class="field-error-message">{{ $message }}</span>@enderror</div>
         <div class="form-field"><label>Compagnie</label><input type="text" value="{{ $line->company->legal_name }}" disabled></div>
@@ -58,7 +59,7 @@
             @endif
             <input type="hidden" name="places_count" id="placesCount" value="{{ $stopIndex }}">
             @error('places')<span class="field-error-message">{{ $message }}</span>@enderror
-            <p class="field-help">L\'origine et la destination doivent figurer dans la liste. Les ordres sont consécutifs à partir de 0.</p>
+            <p class="field-help">L’origine et la destination doivent figurer dans la liste. Les ordres sont consécutifs à partir de 0.</p>
         </div>
     </div>
 </section>
@@ -69,6 +70,7 @@
     <button class="btn" type="submit">Enregistrer les modifications</button>
 </div>
 
+</form>
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', () => {

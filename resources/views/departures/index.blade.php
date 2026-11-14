@@ -54,7 +54,7 @@
                     </td>
                     <td>
                         @if($departure->isScheduled())
-                            @can('update', $departure)<a class="departure-btn cancel" href="{{ route('departures.cancel',$departure) }}" onclick="return confirm('Annuler ce départ ?')">Annuler <x-lucide-x class="w-3 h-3" /></a>@endcan
+                            @can('update', $departure)<form method="POST" action="{{ route('departures.cancel', $departure) }}" style="display:inline" onsubmit="return confirm('Annuler ce départ ?')">@csrf @method('PATCH')<input type="hidden" name="status" value="cancelled"><button class="departure-btn cancel" type="submit">Annuler <x-lucide-x class="w-3 h-3" /></button></form>@endcan
                         @endif
                     </td>
                 </tr>

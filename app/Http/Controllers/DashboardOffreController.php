@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Models\Departure;
 use App\Models\Line;
 use Illuminate\View\View;

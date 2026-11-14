@@ -38,7 +38,7 @@
                         @endif
                     </td>
                     <td>
-                        @can('update', $fare)<a class="btn-action secondary" href="{{ route('fares.edit',$line,$fare) }}">Modifier <x-lucide-pencil aria-hidden="true"/></a>@endcan
+                        @can('update', $fare)<a class="btn-action secondary" href="{{ route('fares.edit', [$line, $fare]) }}">Modifier <x-lucide-pencil aria-hidden="true"/></a>@endcan
                     </td>
                 </tr>
             @empty

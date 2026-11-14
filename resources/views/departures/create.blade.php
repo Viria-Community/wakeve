@@ -8,6 +8,7 @@
 </style>
 @endpush
 @section('content')
+<form method="POST" action="{{ route('departures.store') }}">@csrf
 
 @if($errors->any())
 <div class="form-errors" role="alert"><strong>Le formulaire contient des erreurs.</strong><ul>@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>
@@ -37,13 +38,13 @@
                 <strong id="fleetUnitInfoLabel">Véhicule sélectionné</strong>
                 <small id="fleetUnitInfoCapacity">Capacité : —</small>
             </div>
-            <p class="field-help">Capacité affichée pour information. La capacité réelle est lue sur l\'unité de flotte.</p>
+            <p class="field-help">Capacité affichée pour information. La capacité réelle est lue sur l’unité de flotte.</p>
         </div>
     </div>
 </section>
 
 <section class="form-section">
-    <div class="form-section-title"><span class="form-section-number">4</span><div><h2>Agence (facultatif)</h2><p>L\'agence responsable de l\'exploitation.</p></div></div>
+    <div class="form-section-title"><span class="form-section-number">4</span><div><h2>Agence (facultatif)</h2><p>L’agence responsable de l’exploitation.</p></div></div>
     <div class="departure-form-grid">
         <div class="form-field full"><label for="agency_id">Agence</label><select @class(['field-error' => $errors->has('agency_id')]) id="agency_id" name="agency_id"><option value="">Aucune agence</option>@foreach($agencies as $agency)<option value="{{ $agency->id }}" @selected((string) old('agency_id') === (string) $agency->id)>{{ $agency->name }}</option>@endforeach</select>@error('agency_id')<span class="field-error-message">{{ $message }}</span>@enderror</div>
     </div>
@@ -55,6 +56,7 @@
     <button class="btn" type="submit">Créer le départ</button>
 </div>
 
+</form>
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', () => {

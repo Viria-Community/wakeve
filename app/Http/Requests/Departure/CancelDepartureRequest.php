@@ -30,11 +30,11 @@ class CancelDepartureRequest extends FormRequest
     public function after(): array
     {
         return [
-            function (): void {
+            function (\Illuminate\Validation\Validator $validator): void {
                 $departure = $this->route('departure');
 
                 if ($departure->status === 'cancelled') {
-                    $this->errors()->add('status', 'Ce départ est déjà annulé.');
+                    $validator->errors()->add('status', 'Ce départ est déjà annulé.');
                 }
             },
         ];

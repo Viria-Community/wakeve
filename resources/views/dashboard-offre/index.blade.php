@@ -12,8 +12,8 @@
 <div class="dashboard-offre-head">
     <div>
         <div class="breadcrumb">Offre de transport › Tableau de bord</div>
-        <h1>Tableau de bord de l\'offre</h1>
-        <div class="muted">Aperçu de l\'offre de transport déclarée.</div>
+        <h1>Tableau de bord de l’offre</h1>
+        <div class="muted">Aperçu de l’offre de transport déclarée.</div>
     </div>
 </div>
 

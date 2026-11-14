@@ -8,6 +8,7 @@
 </style>
 @endpush
 @section('content')
+<form method="POST" action="{{ route('fares.store', $line) }}">@csrf
 
 @if($errors->any())
 <div class="form-errors" role="alert"><strong>Le formulaire contient des erreurs.</strong><ul>@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>
@@ -41,4 +42,5 @@
         <button class="btn" type="submit">Créer le tarif</button>
     </div>
 </div>
+</form>
 @endsection

@@ -44,18 +44,18 @@ class UpdateDepartureRequest extends FormRequest
     public function after(): array
     {
         return [
-            function (): void {
+            function (\Illuminate\Validation\Validator $validator): void {
                 $departure = $this->route('departure');
                 $lineId = $this->input('line_id');
                 $line = Line::find($lineId);
 
                 if (!$line) {
-                    $this->errors()->add('line_id', 'La ligne n\'existe pas.');
+                    $validator->errors()->add('line_id', 'La ligne n\'existe pas.');
                     return;
                 }
 
                 if (!$line->isActive()) {
-                    $this->errors()->add('line_id', 'La ligne doit être active.');
+                    $validator->errors()->add('line_id', 'La ligne doit être active.');
                 }
 
                 $companyId = $this->user()->isAdmin()
@@ -63,32 +63,32 @@ class UpdateDepartureRequest extends FormRequest
                     : $this->user()->company_id;
 
                 if ($line->company_id !== $companyId) {
-                    $this->errors()->add('line_id', 'Vous ne pouvez pas gérer cette ligne.');
+                    $validator->errors()->add('line_id', 'Vous ne pouvez pas gérer cette ligne.');
                 }
 
                 $fleetUnit = FleetUnit::find($this->input('fleet_unit_id'));
                 if (!$fleetUnit) {
-                    $this->errors()->add('fleet_unit_id', 'Le véhicule n\'existe pas.');
+                    $validator->errors()->add('fleet_unit_id', 'Le véhicule n\'existe pas.');
                     return;
                 }
 
                 if ($fleetUnit->company_id !== $companyId) {
-                    $this->errors()->add('fleet_unit_id', 'Ce véhicule n\'appartient pas à votre compagnie.');
+                    $validator->errors()->add('fleet_unit_id', 'Ce véhicule n\'appartient pas à votre compagnie.');
                 }
 
                 if ($fleetUnit->status !== 'active') {
-                    $this->errors()->add('fleet_unit_id', 'Le véhicule doit être actif.');
+                    $validator->errors()->add('fleet_unit_id', 'Le véhicule doit être actif.');
                 }
 
                 if ($fleetUnit->availability !== 'available') {
-                    $this->errors()->add('fleet_unit_id', 'Le véhicule doit être disponible.');
+                    $validator->errors()->add('fleet_unit_id', 'Le véhicule doit être disponible.');
                 }
 
                 $agencyId = $this->input('agency_id');
                 if ($agencyId) {
                     $agency = \App\Models\Agency::find($agencyId);
                     if ($agency && $agency->company_id !== $companyId) {
-                        $this->errors()->add('agency_id', 'Cette agence n\'appartient pas à votre compagnie.');
+                        $validator->errors()->add('agency_id', 'Cette agence n\'appartient pas à votre compagnie.');
                     }
                 }
             },

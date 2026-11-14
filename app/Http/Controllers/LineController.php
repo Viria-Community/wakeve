@@ -62,20 +62,19 @@ class LineController extends Controller
 
     public function store(StoreLineRequest $request): RedirectResponse
     {
-        $companyId = $request->user()->isAdmin()
-            ? $request->validated('company_id')
-            : $request->user()->company_id;
+        $data = $request->safe()->except(['places']);
 
-        $data = $request->safe()->except(['places', 'company_id']);
-        $data['company_id'] = $companyId;
+        $stops = collect($request->validated('places'))
+            ->mapWithKeys(fn ($stop) => [
+                (int) $stop['place_id'] => ['stop_order' => (int) $stop['stop_order']],
+            ])
+            ->all();
 
-        DB::transaction(function () use ($request, $data) {
+        $line = DB::transaction(function () use ($data, $stops) {
             $line = Line::create($data);
+            $line->places()->sync($stops);
 
-            $placesData = $request->input('places', []);
-            $line->places()->syncWithPivotValues($placesData, [], function ($pivot, $id) {
-                return ['stop_order' => (int) $pivot['stop_order']];
-            });
+            return $line;
         });
 
         return redirect()->route('lines.show', $line)
@@ -88,10 +87,6 @@ class LineController extends Controller
 
         $line->load(['company', 'transportMode', 'originPlace', 'destinationPlace', 'places', 'departures', 'fares']);
 
-        if (! auth()->user()->isAdmin() && $line->company_id !== auth()->user()->company_id) {
-            abort(403);
-        }
-
         return view('lines.show', [
             'line' => $line,
         ]);
@@ -101,12 +96,9 @@ class LineController extends Controller
     {
         Gate::authorize('update', $line);
 
-        if (! auth()->user()->isAdmin() && $line->company_id !== auth()->user()->company_id) {
-            abort(403);
-        }
-
         return view('lines.edit', [
             'line' => $line->load(['places' => fn ($q) => $q->orderByPivot('stop_order')]),
+            'company' => $line->company,
             'transportModes' => TransportMode::query()->orderBy('label')->get(),
             'places' => Place::query()->orderBy('name')->get(),
         ]);
@@ -114,20 +106,17 @@ class LineController extends Controller
 
     public function update(UpdateLineRequest $request, Line $line): RedirectResponse
     {
-        $companyId = $request->user()->isAdmin()
-            ? $request->validated('company_id')
-            : $request->user()->company_id;
+        $data = $request->safe()->except(['places', 'company_id']);
 
-        if ($line->company_id !== $companyId && ! $request->user()->isAdmin()) {
-            abort(403);
-        }
+        $stops = collect($request->validated('places'))
+            ->mapWithKeys(fn ($stop) => [
+                (int) $stop['place_id'] => ['stop_order' => (int) $stop['stop_order']],
+            ])
+            ->all();
 
-        $data = $request->safe()->except('places');
-        $line->update($data);
-
-        $placesData = $request->input('places', []);
-        $line->places()->syncWithPivotValues($placesData, [], function ($pivot, $id) {
-            return ['stop_order' => (int) $pivot['stop_order']];
+        DB::transaction(function () use ($line, $data, $stops) {
+            $line->update($data);
+            $line->places()->sync($stops);
         });
 
         return redirect()->route('lines.show', $line)
@@ -137,10 +126,6 @@ class LineController extends Controller
     public function updateStatus(UpdateLineStatusRequest $request, Line $line): RedirectResponse
     {
         Gate::authorize('update', $line);
-
-        if (! auth()->user()->isAdmin() && $line->company_id !== auth()->user()->company_id) {
-            abort(403);
-        }
 
         $line->update($request->validated());
 
