@@ -24,8 +24,7 @@ class CompanyPolicy
 
     public function update(User $user, Company $company): bool
     {
-        return $user->isAdmin()
-            || ($user->role === 'company_manager' && $this->canAccessCompany($user, $company));
+        return $user->role === 'company_manager' && $this->canAccessCompany($user, $company);
     }
 
     public function delete(User $user, Company $company): bool
