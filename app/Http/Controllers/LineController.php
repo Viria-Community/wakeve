@@ -52,11 +52,16 @@ class LineController extends Controller
             ? $request->integer('company_id')
             : $request->user()->company_id;
 
+        $company = Company::find($companyId);
+
         return view('lines.create', [
             'line' => new Line,
-            'company' => Company::find($companyId),
-            'transportModes' => TransportMode::query()->orderBy('label')->get(),
-            'places' => Place::query()->orderBy('name')->get(),
+            'company' => $company,
+            'transportModes' => $company?->transportModes()->orderBy('label')->get() ?? collect(),
+            'places' => Place::query()
+                ->orderBy('city')
+                ->orderBy('name')
+                ->get(),
         ]);
     }
 
@@ -87,8 +92,27 @@ class LineController extends Controller
 
         $line->load(['company', 'transportMode', 'originPlace', 'destinationPlace', 'places', 'departures', 'fares']);
 
+        $age = request()->integer('age') ?: null;
+        $pricing = app(\App\Services\FarePricing::class);
+        $classes = config('offre.classes');
+        $arrets = $line->places->values();
+        $trajets = [];
+
+        for ($i = 0; $i < $arrets->count(); $i++) {
+            for ($j = $i + 1; $j < $arrets->count(); $j++) {
+                $prix = [];
+                foreach ($classes as $code => $libelle) {
+                    $prix[$code] = $pricing->prixTrajet($line, $arrets[$i], $arrets[$j], $code, $age);
+                }
+                $trajets[] = ['de' => $arrets[$i]->name, 'a' => $arrets[$j]->name, 'prix' => $prix];
+            }
+        }
+
         return view('lines.show', [
             'line' => $line,
+            'trajets' => $trajets,
+            'classes' => $classes,
+            'age' => $age,
         ]);
     }
 
@@ -100,7 +124,7 @@ class LineController extends Controller
             'line' => $line->load(['places' => fn ($q) => $q->orderByPivot('stop_order')]),
             'company' => $line->company,
             'transportModes' => TransportMode::query()->orderBy('label')->get(),
-            'places' => Place::query()->orderBy('name')->get(),
+            'places' => Place::query()->where('province', $line->company?->province)->whereColumn('name', '!=', 'city')->orderBy('city')->orderBy('name')->get(),
         ]);
     }
 

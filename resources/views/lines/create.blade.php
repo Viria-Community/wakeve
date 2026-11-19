@@ -26,9 +26,15 @@
 <section class="form-section">
     <div class="form-section-title"><span class="form-section-number">2</span><div><h2>Itinéraire</h2><p>Origine, destination et points desservis.</p></div></div>
     <div class="line-form-grid">
-        <div class="form-field"><label for="transport_mode_id">Mode de transport <span class="required">*</span></label><select @class(['field-error' => $errors->has('transport_mode_id')]) id="transport_mode_id" name="transport_mode_id" required aria-invalid="{{ $errors->has('transport_mode_id') ? 'true' : 'false' }}"><option value="">Sélectionner un mode</option>@foreach($transportModes as $mode)<option value="{{ $mode->id }}" @selected((string) old('transport_mode_id') === (string) $mode->id)>{{ $mode->label }}</option>@endforeach</select>@error('transport_mode_id')<span class="field-error-message">{{ $message }}</span>@enderror</div>
-        <div class="form-field full"><label for="origin_place_id">Origine <span class="required">*</span></label><select @class(['field-error' => $errors->has('origin_place_id')]) id="origin_place_id" name="origin_place_id" required aria-invalid="{{ $errors->has('origin_place_id') ? 'true' : 'false' }}"><option value="">Sélectionner une origine</option>@foreach($places as $place)<option value="{{ $place->id }}" @selected((string) old('origin_place_id') === (string) $place->id)>{{ $place->name }}{{ $place->city ? ' ('.$place->city.')' : '' }}</option>@endforeach</select>@error('origin_place_id')<span class="field-error-message">{{ $message }}</span>@enderror</div>
-        <div class="form-field full"><label for="destination_place_id">Destination <span class="required">*</span></label><select @class(['field-error' => $errors->has('destination_place_id')]) id="destination_place_id" name="destination_place_id" required aria-invalid="{{ $errors->has('destination_place_id') ? 'true' : 'false' }}"><option value="">Sélectionner une destination</option>@foreach($places as $place)<option value="{{ $place->id }}" @selected((string) old('destination_place_id') === (string) $place->id)>{{ $place->name }}{{ $place->city ? ' ('.$place->city.')' : '' }}</option>@endforeach</select>@error('destination_place_id')<span class="field-error-message">{{ $message }}</span>@enderror</div>
+        @php($modes = $transportModes)
+@if($modes->count() === 1)
+<div class="form-field"><label>Mode de transport <span class="required">*</span></label><input type="text" value="{{ config('offre.modes.'.$modes->first()->label, $modes->first()->label) }}" disabled><input type="hidden" name="transport_mode_id" value="{{ $modes->first()->id }}"></div>
+@else
+@php($modesCompagnie = $company ? $company->transportModes : collect())
+<div class="form-field"><label>Mode de transport</label>@if($modesCompagnie->count() === 1)<input type="text" value="{{ config('offre.modes.'.$modesCompagnie->first()->label, $modesCompagnie->first()->label) }}" disabled><input type="hidden" name="transport_mode_id" value="{{ $modesCompagnie->first()->id }}">@else<select id="transport_mode_id" name="transport_mode_id" required><option value="">Sélectionner un mode</option>@foreach($modesCompagnie as $mode)<option value="{{ $mode->id }}" @selected((string) old('transport_mode_id') === (string) $mode->id)>{{ config('offre.modes.'.$mode->label, $mode->label) }}</option>@endforeach</select>@endif</div>
+@endif
+        <div class="form-field full"><label for="origin_place_id">Origine <span class="required">*</span></label><select @class(['field-error' => $errors->has('origin_place_id')]) id="origin_place_id" name="origin_place_id" required aria-invalid="{{ $errors->has('origin_place_id') ? 'true' : 'false' }}"><option value="">Sélectionner une origine</option>@foreach($places->groupBy('city') as $ville => $lieux)<optgroup label="{{ $ville }}">@foreach($lieux as $place)<option value="{{ $place->id }}" @selected((string) old('origin_place_id') === (string) $place->id)>{{ $place->name }}{{ $place->city ? ' ('.$place->city.')' : '' }}</option>@endforeach</optgroup>@endforeach</select>@error('origin_place_id')<span class="field-error-message">{{ $message }}</span>@enderror</div>
+        <div class="form-field full"><label for="destination_place_id">Destination <span class="required">*</span></label><select @class(['field-error' => $errors->has('destination_place_id')]) id="destination_place_id" name="destination_place_id" required aria-invalid="{{ $errors->has('destination_place_id') ? 'true' : 'false' }}"><option value="">Sélectionner une destination</option>@foreach($places->groupBy('city') as $ville => $lieux)<optgroup label="{{ $ville }}">@foreach($lieux as $place)<option value="{{ $place->id }}" @selected((string) old('destination_place_id') === (string) $place->id)>{{ $place->name }}{{ $place->city ? ' ('.$place->city.')' : '' }}</option>@endforeach</optgroup>@endforeach</select>@error('destination_place_id')<span class="field-error-message">{{ $message }}</span>@enderror</div>
     </div>
 </section>
 
@@ -43,9 +49,9 @@
                         <span class="stop-order">{{ $stopIndex }}</span>
                         <select class="stop-place-id" name="places[{{ $stopIndex }}][place_id]" required>
                             <option value="">Sélectionner un point</option>
-                            @foreach($places as $place)
+                            @foreach($places->groupBy('city') as $ville => $lieux)<optgroup label="{{ $ville }}">@foreach($lieux as $place)
                                 <option value="{{ $place->id }}" @selected((string) ($stop['place_id'] ?? '') === (string) $place->id)>{{ $place->name }}{{ $place->city ? ' ('.$place->city.')' : '' }}</option>
-                            @endforeach
+                            @endforeach</optgroup>@endforeach
                         </select>
                         <span class="stop-name" style="display:none">{{ $places->firstWhere('id', $stop['place_id'] ?? null)?->name ?? '' }}</span>
                         <button type="button" class="btn-icon btn-remove-stop" aria-label="Supprimer"><x-lucide-x /></button>

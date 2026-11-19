@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 class CompanyApplicationResubmittedNotification extends Notification
@@ -18,7 +19,19 @@ class CompanyApplicationResubmittedNotification extends Notification
     /** @return array<int, string> */
     public function via(object $notifiable): array
     {
-        return ['database'];
+        return ['mail', 'database'];
+    }
+
+    public function toMail(object $notifiable): MailMessage
+    {
+        $data = $this->toArray($notifiable);
+
+        return (new MailMessage)
+            ->subject('Un dossier a été renvoyé pour examen')
+            ->greeting('Bonjour,')
+            ->line($data['message'] ?? 'Un dossier corrigé a été renvoyé pour examen.')
+            ->action('Examiner le dossier', $data['url'] ?? url('/'))
+            ->salutation('Plateforme Nationale de Mobilité du Gabon');
     }
 
     /** @return array<string, int|string> */

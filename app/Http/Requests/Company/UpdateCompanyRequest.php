@@ -34,7 +34,7 @@ class UpdateCompanyRequest extends FormRequest
             'rccm' => ['required', 'string', 'max:50', Rule::unique('companies', 'rccm')->ignore($company)],
             'nif' => ['nullable', 'string', 'max:50'],
             'email' => ['required', 'email', 'max:150', Rule::unique('companies', 'email')->ignore($company)],
-            'phone' => ['required', 'string', 'max:30'],
+            'phone' => ['required', 'string', 'max:30', new \App\Rules\TelephoneGabon],
             'address' => ['nullable', 'string', 'max:255'],
             'province' => ['nullable', Rule::in(array_keys(config('geography')))],
             'city' => ['nullable', 'required_with:province', 'string', 'max:100', new LocalityInProvince],

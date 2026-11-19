@@ -2,39 +2,41 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Departure;
 use App\Models\Line;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class DashboardOffreController extends Controller
 {
     public function index(Request $request): View
     {
-        $companyId = $request->user()->company_id;
+        $user = $request->user();
+        $companyId = $user->company_id;
+        $isScoped = ! $user->isAdmin();
 
-        $totalLines = Line::query()
-            ->when(! $request->user()->isAdmin(), fn ($q) => $q->where('company_id', $companyId))
-            ->count();
+        $lines = Line::query()
+            ->when($isScoped, fn ($query) => $query->where('company_id', $companyId));
 
-        $activeLines = Line::query()
-            ->where('status', 'active')
-            ->when(! $request->user()->isAdmin(), fn ($q) => $q->where('company_id', $companyId))
-            ->count();
-
-        $totalDepartures = Departure::query()
+        $departures = Departure::query()
             ->whereDate('departure_date', '>=', now()->toDateString())
-            ->when(! $request->user()->isAdmin(), fn ($q) => $q->whereHas('line', fn ($q2) => $q2->where('company_id', $companyId)))
-            ->count();
+            ->when($isScoped, fn ($query) => $query->whereHas(
+                'line',
+                fn ($lineQuery) => $lineQuery->where('company_id', $companyId)
+            ));
 
-        $scheduledDepartures = Departure::query()
+        $totalLines = (clone $lines)->count();
+        $activeLines = (clone $lines)->where('status', 'active')->count();
+        $totalDepartures = (clone $departures)->count();
+        $scheduledDepartures = (clone $departures)
             ->where('status', 'scheduled')
-            ->whereDate('departure_date', '>=', now()->toDateString())
-            ->when(! $request->user()->isAdmin(), fn ($q) => $q->whereHas('line', fn ($q2) => $q2->where('company_id', $companyId)))
             ->count();
 
-        return view('dashboard-offre.index', compact(
-            'totalLines', 'activeLines', 'totalDepartures', 'scheduledDepartures'
-        ));
+        return view('dashboard-offre.index', [
+            'totalLines' => $totalLines,
+            'activeLines' => $activeLines,
+            'totalDepartures' => $totalDepartures,
+            'scheduledDepartures' => $scheduledDepartures,
+        ]);
     }
 }

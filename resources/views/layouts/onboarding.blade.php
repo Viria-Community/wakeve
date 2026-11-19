@@ -22,6 +22,35 @@
 .button:disabled { background: #d9e0dd; color: var(--muted); cursor: not-allowed; }
 :is(a,button,input,select,textarea):focus-visible { outline: var(--pnmg-focus); outline-offset: var(--pnmg-focus-offset); }
 </style>
+<style>
+/* Finition visuelle des parcours publics d'inscription. */
+.public-header{background:#fff;border-bottom:1px solid var(--border)}
+.card{border-color:#e2e9e6;border-radius:14px;box-shadow:0 10px 30px rgba(38,70,83,.06)}
+.card-body{padding:34px 38px}
+.section-title{color:var(--text);font-weight:700;letter-spacing:-.01em}
+label{color:#2c4a56;font-weight:700}
+input,select,textarea{border-color:#c7d3cf;border-radius:8px;background:#fff;font-size:14px;transition:border-color .16s ease,box-shadow .16s ease}
+input:hover,select:hover,textarea:hover{border-color:#aebfba}
+input:focus,select:focus,textarea:focus{border-color:var(--green);outline:none;box-shadow:0 0 0 3px rgba(8,122,90,.14)}
+.progress:before{background:#e0e8e5}
+.progress-step .number{border-color:#d5dfdc;font-weight:700}
+.progress-step.active .number{background:var(--green);border-color:var(--green)}
+.progress-step.done .number{background:var(--pale);border-color:#bfe0d4;color:#076047}
+.button{border-radius:8px;min-height:44px;font-size:13.5px;transition:background-color .16s ease,color .16s ease}
+.button.secondary{border-color:#ccd8d4;color:#264653}
+.button.secondary:hover{background:var(--bg)}
+.option{border-radius:9px;border-color:#ccd8d4}
+.option:hover{border-color:#aec6bd}
+.availability-note,.process-note{border-radius:8px;border-color:#cfe2da;background:#f2f9f5;color:#2c5a4c}
+.document{border-color:#e2e9e6;border-radius:9px}
+.document input[type=file]{border-color:#b9cec6;border-radius:8px;background:#fbfdfc;color:#4a5f66;cursor:pointer}
+.document input[type=file]:hover{border-color:var(--green);background:#f5faf7}
+.hint{color:var(--muted)}
+:is(a,button,input,select,textarea):focus-visible{outline:3px solid var(--green);outline-offset:3px}
+</style>
+@include('layouts._pnmg-ui')
+@include('layouts._ligne-design')
+<link rel="stylesheet" href="{{ asset('css/pnmg-ui.css') }}">
 </head>
 <body>
 <header class="public-header"><div class="public-brand"><img src="{{ asset('images/pnmg/logo-horizontal-couleur.png') }}" alt="PNMG — Plateforme Nationale de Mobilité du Gabon" width="160" height="34"></div><div class="platform-name">Plateforme Nationale de Mobilité du Gabon</div><div class="header-login"><a class="header-home" href="{{ route('home') }}"><x-lucide-arrow-left aria-hidden="true"/>Retour au site</a><span>Vous avez déjà un compte ?</span><a href="{{ route('login') }}">Se connecter</a></div></header>

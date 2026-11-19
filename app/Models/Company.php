@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+#[\Illuminate\Database\Eloquent\Attributes\ObservedBy([\App\Observers\CompanyObserver::class])]
 class Company extends Model
 {
     use SoftDeletes;

@@ -31,8 +31,8 @@
     <section class="form-section">
         <div class="form-section-title"><span class="form-section-number">1</span><div><h2>Détails du tarif</h2><p>Montant et classe de tarification.</p></div></div>
         <div class="fare-form-grid">
-            <div class="form-field"><label for="amount">Montant (€) <span class="required">*</span></label><input @class(['field-error' => $errors->has('amount')]) id="amount" type="number" step="0.01" min="0.01" name="amount" value="{{ old('amount') }}" required aria-invalid="{{ $errors->has('amount') ? 'true' : 'false' }}" placeholder="Ex. : 15.50">@error('amount')<span class="field-error-message">{{ $message }}</span>@enderror</div>
-            <div class="form-field"><label for="fare_class">Classe</label><input @class(['field-error' => $errors->has('fare_class')]) id="fare_class" type="text" name="fare_class" value="{{ old('fare_class') }}" maxlength="50" placeholder="Ex. : Première, Business, Standard">@error('fare_class')<span class="field-error-message">{{ $message }}</span>@enderror</div>
+            <div class="form-field"><label for="amount">Montant (FCFA) <span class="required">*</span></label><input @class(['field-error' => $errors->has('amount')]) id="amount" type="number" step="0.01" min="0.01" name="amount" value="{{ old('amount') }}" required aria-invalid="{{ $errors->has('amount') ? 'true' : 'false' }}" placeholder="Ex. : 15.50">@error('amount')<span class="field-error-message">{{ $message }}</span>@enderror</div>
+            <div class="form-field"><label for="fare_class">Classe <span class="required">*</span></label><select id="fare_class" name="fare_class" required><option value="economique" @selected(old('fare_class', request('classe', 'standard')) === 'economique')>Économique</option><option value="standard" @selected(old('fare_class', request('classe', 'standard')) === 'standard')>Standard</option><option value="premiere" @selected(old('fare_class', request('classe', 'standard')) === 'premiere')>Première</option></select></div>
         </div>
     </section>
 
@@ -43,4 +43,18 @@
     </div>
 </div>
 </form>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var grille = @json(config('offre.grille'));
+    var classe = document.getElementById('fare_class');
+    var montant = document.getElementById('amount') || document.querySelector('input[name="amount"]');
+    if (!classe || !montant) { console.warn('PNMG : champ classe ou montant introuvable'); return; }
+    if (montant.value === '' && grille[classe.value] !== undefined) { montant.value = grille[classe.value]; }
+    classe.addEventListener('change', function () {
+        if (grille[classe.value] !== undefined) { montant.value = grille[classe.value]; }
+    });
+});
+</script>
 @endsection

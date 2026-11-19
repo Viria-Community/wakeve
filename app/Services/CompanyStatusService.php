@@ -38,6 +38,7 @@ class CompanyStatusService
             $locked->status = CompanyStatus::Active->value;
             $locked->validated_at = now();
             $locked->save();
+            $this->notifyManagers($locked, CompanyStatus::Active, null, route('dashboard', [], false));
 
             $company->setRawAttributes($locked->getAttributes(), true);
         });

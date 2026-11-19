@@ -1,12 +1,12 @@
 @php
     $selectedProvince = old('province', $location['province'] ?? null);
     $selectedCity = old('city', $location['city'] ?? '');
-    $provinceCities = config('geography.'.$selectedProvince.'.cities', []);
+    $provinceCities = \App\Support\Geography::citiesAvailable($selectedProvince);
     $customCity = $selectedCity !== '' && !in_array($selectedCity, $provinceCities, true);
 @endphp
 <div class="{{ $fieldClass ?? '' }}"><label for="province">Province</label>
 <select id="province" name="province"><option value="">Sélectionner une province</option>
-@foreach(config('geography') as $code => $province)<option value="{{ $code }}" @selected($selectedProvince === $code)>{{ $province['name'] }}</option>@endforeach
+@foreach(\App\Support\Geography::available() as $code => $province)<option value="{{ $code }}" @selected($selectedProvince === $code)>{{ $province['name'] }}</option>@endforeach
 </select>@error('province')<span role="alert">{{ $message }}</span>@enderror</div>
 <div class="{{ $fieldClass ?? '' }}"><label for="city">Ville / localité</label>
 <select id="city" name="city" data-selected-city="{{ $selectedCity }}" @disabled(!$selectedProvince)>
@@ -23,7 +23,7 @@
 <input id="address" name="address" value="{{ old('address', $location['address'] ?? '') }}" maxlength="255" autocomplete="street-address" placeholder="Quartier, rue, bâtiment ou repère">
 @error('address')<span role="alert">{{ $message }}</span>@enderror</div>
 <script>(() => {
-const provinces = {{ Illuminate\Support\Js::from(config('geography')) }};
+const provinces = {{ Illuminate\Support\Js::from(\App\Support\Geography::available()) }};
 const province = document.getElementById('province');
 const city = document.getElementById('city');
 const customWrapper = document.getElementById('city-custom-wrapper');

@@ -35,7 +35,7 @@ class StoreCompanyRequest extends FormRequest
             'rccm' => ['required', 'string', 'max:50', 'unique:companies,rccm'],
             'nif' => ['nullable', 'string', 'max:50'],
             'email' => ['required', 'email', 'max:150', 'unique:companies,email'],
-            'phone' => ['required', 'string', 'max:30'],
+            'phone' => ['required', 'string', 'max:30', new \App\Rules\TelephoneGabon],
             'address' => ['nullable', 'string', 'max:255'],
             'province' => ['nullable', Rule::in(array_keys(config('geography')))],
             'city' => ['nullable', 'required_with:province', 'string', 'max:100', new LocalityInProvince],

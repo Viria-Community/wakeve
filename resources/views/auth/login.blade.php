@@ -11,86 +11,90 @@
     <meta name="robots" content="noindex, nofollow">
     @include('layouts._palette')
     <style>
-        * { box-sizing: border-box; }
-        body { margin: 0; color: var(--text); background: var(--bg); font-family: "Maiandra GD", Calibri, "Segoe UI", Arial, sans-serif; }
-        h1, h2, .logo strong { font-family: Corbel, Calibri, "Segoe UI", Arial, sans-serif; font-weight: 700; }
-        main { min-height: 100vh; min-height: 100svh; display: grid; grid-template-columns: minmax(320px, 42%) 1fr; }
-        .brand { padding: clamp(32px, 5vw, 80px); background: var(--dark) url("{{ asset('images/pnmg/trame-itineraires.svg') }}") center / cover no-repeat; color: white; display: flex; flex-direction: column; gap: 32px; }
-        .logo { display: flex; align-items: center; gap: 14px; }
-        .logo-compact { display: none; }
-        .logo-mark { display: grid; place-items: center; width: 46px; height: 46px; border: 1px solid #ffffff40; border-radius: 12px; background: var(--green); }
-        .logo-mark svg { width: 24px; height: 24px; stroke-width: 1.9; }
-        .logo strong { display: block; font-size: 23px; letter-spacing: .08em; }
-        .logo small { display: block; margin-top: 3px; color: #dce7e9; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
-        .brand-copy { max-width: 530px; margin-top: auto; }
-        .brand-copy::before { content: ''; display: block; width: 52px; height: 4px; margin-bottom: 28px; background: var(--gold); }
-        h1 { margin: 0; font-size: clamp(30px, 3vw, 44px); line-height: 1.15; letter-spacing: -.025em; font-weight: 700; }
-        .brand-copy p { max-width: 430px; margin: 26px 0 0; color: #dce7e9; font-size: 17px; line-height: 1.75; }
-        .brand-footer { margin: 0; color: #dce7e9; font-size: 12px; letter-spacing: .035em; }
-        .form-side { padding: 24px 32px; display: flex; align-items: center; justify-content: center; }
-        .card { width: 100%; max-width: 420px; padding: 32px; border: 1px solid var(--border); border-radius: 12px; background: #fff; box-shadow: 0 5px 20px #17352b0a; }
-        .back-to-site { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; margin: -10px 0 8px; color: var(--green); font-size: 13px; font-weight: 700; text-decoration: none; }
-        .back-to-site:hover { text-decoration: underline; text-underline-offset: 4px; }
-        .back-to-site svg { width: 16px; height: 16px; stroke-width: 2; }
-        .back-to-site:focus-visible { outline: 3px solid var(--green); outline-offset: 3px; }
-        h2 { margin: 0; font-size: 28px; line-height: 1.25; letter-spacing: -.03em; }
-        .field { margin-top: 18px; }
-        form .field:first-of-type { margin-top: 24px; }
-        label { display: block; margin-bottom: 9px; font-size: 14px; font-weight: 650; }
-        .text-input { width: 100%; min-height: 44px; padding: 10px 12px; border: 1px solid #a8b6bb; border-radius: 6px; color: var(--text); background: white; font: inherit; font-size: 16px; }
-        .text-input::placeholder { color: var(--muted); opacity: 1; }
-        .text-input:focus { border-color: var(--green); }
-        .text-input:focus-visible { outline: 3px solid var(--green); outline-offset: 3px; }
-        .text-input[aria-invalid=true] { border-color: var(--danger); }
-        .password-field { position: relative; }
-        .password-field .text-input { padding-right: 56px; }
-        .password-field input::-ms-reveal, .password-field input::-ms-clear { display: none; }
-        .password-toggle { position: absolute; top: 0; right: 0; width: 44px; height: 44px; display: grid; place-items: center; border: 0; border-radius: 6px; background: transparent; color: var(--muted); cursor: pointer; }
-        .password-toggle:hover { background: var(--pale); color: var(--green); }
-        .password-toggle[hidden], .password-toggle [hidden] { display: none; }
-        .password-toggle svg { display: block; width: 16px; height: 16px; stroke-width: 2; }
-        .submit { width: 100%; min-height: 44px; margin-top: 18px; padding: 10px 14px; border: 0; border-radius: 8px; background: var(--green); color: white; font: inherit; font-size: 15px; font-weight: 700; cursor: pointer; }
-        .submit:not(:disabled):hover { background: var(--green-hover); }
-        .submit:not(:disabled):active { filter: brightness(.9); }
-        .submit:disabled { background: #d9e0dd; color: var(--muted); cursor: not-allowed; }
-        .register { margin: 18px 0 0; color: var(--muted); text-align: center; font-size: 13px; line-height: 1.5; }
-        .register a { display: inline-block; color: var(--green); font-weight: 700; text-underline-offset: 4px; }
-        .field-error { margin: 8px 0 0; color: var(--danger-text); font-size: 13px; line-height: 1.5; }
-        .status { margin-bottom: 20px; padding: 12px 14px; border: 1px solid #b8ddcf; border-radius: 8px; background: var(--pale); font-size: 14px; line-height: 1.5; }
-        @media (max-width: 800px) {
-            main { display: block; }
-            .brand { padding: 24px; gap: 24px; }
-            .logo strong { font-size: 19px; }
-            .logo-mark { width: 38px; height: 38px; font-size: 20px; }
-            .brand-copy { max-width: 540px; }
-            .brand-copy::before { width: 32px; height: 3px; margin-bottom: 14px; }
-            h1 { font-size: 27px; line-height: 1.2; }
-            .brand-copy p, .brand-footer { display: none; }
-            .form-side { padding: 28px 18px 40px; }
-            .card { max-width: 420px; padding: 28px 24px; border-radius: 10px; box-shadow: none; }
-            h2 { font-size: 25px; }
+        *,*::before,*::after{box-sizing:border-box}
+        html,body{margin:0;padding:0}
+        body{min-height:100vh;color:var(--text);background:var(--bg);font-family:"Maiandra GD", Calibri, "Segoe UI", Arial, sans-serif;-webkit-font-smoothing:antialiased}
+        h1,h2,.logo strong{font-family:Corbel, Calibri, "Segoe UI", Arial, sans-serif;font-weight:700}
+        .lucide{display:inline-block;vertical-align:middle;flex:0 0 auto}
+
+        main{min-height:100vh;min-height:100svh;display:grid;grid-template-columns:46% 54%}
+
+        /* ---------- Panneau institutionnel ---------- */
+        .brand{position:relative;overflow:hidden;padding:clamp(36px,5vw,80px);background:linear-gradient(160deg,#2c4f5b 0%,#264653 52%,#1f3b45 100%);color:#fff;display:flex;flex-direction:column;gap:32px}
+        .brand::before{content:"";position:absolute;inset:0;background:url("{{ asset('images/pnmg/trame-itineraires.svg') }}") left center / auto 100% no-repeat;opacity:.14;pointer-events:none}
+        .brand>*{position:relative;z-index:1}
+        .logo{display:flex;align-items:center;gap:14px}
+        .logo img{display:block;width:188px;height:auto}
+        .logo-compact{display:none}
+        .brand-copy{max-width:480px;margin-top:auto}
+        .brand-copy::before{content:"";display:block;width:48px;height:3px;margin-bottom:26px;background:var(--gold)}
+        h1{margin:0;font-size:clamp(30px,3.1vw,42px);line-height:1.14;letter-spacing:-.028em;font-weight:700}
+        .brand-copy p{max-width:420px;margin:24px 0 0;color:#c8d9da;font-size:16px;line-height:1.75}
+        .brand-footer{margin:0;padding-top:24px;border-top:1px solid rgba(255,255,255,.16);color:#a9c0c2;font-size:12px;letter-spacing:.02em}
+
+        /* ---------- Formulaire ---------- */
+        .form-side{display:flex;align-items:center;justify-content:center;padding:40px 32px;background:var(--bg)}
+        .card{width:100%;max-width:430px;padding:38px 36px;border:1px solid #e2e8e6;border-radius:14px;background:#fff;box-shadow:0 14px 40px rgba(38,70,83,.07)}
+        .back-to-site{display:inline-flex;align-items:center;gap:7px;min-height:40px;margin:-6px 0 10px;color:var(--green);font-size:12.5px;font-weight:700;text-decoration:none}
+        .back-to-site:hover{text-decoration:underline;text-underline-offset:4px}
+        .back-to-site svg{width:15px;height:15px;stroke-width:2}
+        h2{margin:0;font-size:27px;line-height:1.25;letter-spacing:-.03em;color:var(--text)}
+        .field{margin-top:18px}
+        form .field:first-of-type{margin-top:24px}
+        label{display:block;margin-bottom:8px;color:#2c4a56;font-size:13.5px;font-weight:700}
+        .text-input{width:100%;min-height:46px;padding:11px 13px;border:1px solid #c7d3cf;border-radius:8px;color:var(--text);background:#fff;font:inherit;font-size:15px;transition:border-color .16s ease,box-shadow .16s ease}
+        .text-input::placeholder{color:#87979c;opacity:1}
+        .text-input:hover{border-color:#aebfba}
+        .text-input:focus{border-color:var(--green);outline:none;box-shadow:0 0 0 3px rgba(8,122,90,.14)}
+        .text-input[aria-invalid=true]{border-color:var(--danger)}
+        .text-input[aria-invalid=true]:focus{box-shadow:0 0 0 3px rgba(230,57,70,.12)}
+        .password-field{position:relative}
+        .password-field .text-input{padding-right:54px}
+        .password-field input::-ms-reveal,.password-field input::-ms-clear{display:none}
+        .password-toggle{position:absolute;top:1px;right:1px;width:44px;height:44px;display:grid;place-items:center;border:0;border-radius:8px;background:transparent;color:#6d7f85;cursor:pointer;transition:background-color .16s ease,color .16s ease}
+        .password-toggle:hover{background:var(--pale);color:var(--green)}
+        .password-toggle[hidden],.password-toggle [hidden]{display:none}
+        .password-toggle svg{display:block;width:17px;height:17px;stroke-width:2}
+        .submit{width:100%;min-height:46px;margin-top:22px;padding:11px 16px;border:0;border-radius:8px;background:var(--green);color:#fff;font:inherit;font-size:15px;font-weight:700;cursor:pointer;transition:background-color .16s ease}
+        .submit:not(:disabled):hover{background:var(--green-hover)}
+        .submit:not(:disabled):active{background:#05573f}
+        .submit:disabled{background:#d9e0dd;color:var(--muted);cursor:not-allowed}
+        .register{margin:18px 0 0;padding-top:18px;border-top:1px solid #edf1ef;color:var(--muted);text-align:center;font-size:13px;line-height:1.6}
+        .register a{display:inline-block;color:var(--green);font-weight:700;text-underline-offset:4px}
+        .register a:hover{text-decoration-thickness:2px}
+        .field-error{margin:8px 0 0;color:var(--danger-text);font-size:12.5px;line-height:1.5}
+        .status{margin:18px 0 0;padding:11px 14px;border:1px solid #bfe0d4;border-left:3px solid var(--green);border-radius:8px;background:var(--pale);color:#1d4f40;font-size:13.5px;line-height:1.5}
+        :is(a,button,input,select,textarea):focus-visible{outline:3px solid var(--green);outline-offset:3px}
+
+        @media (max-width:900px){
+            main{grid-template-columns:1fr}
+            .brand{padding:22px 24px;gap:18px}
+            .brand-copy{margin-top:6px}
+            .brand-copy::before{width:34px;height:3px;margin-bottom:14px}
+            h1{font-size:23px;line-height:1.25}
+            .brand-copy p,.brand-footer{display:none}
+            .form-side{padding:32px 18px 44px}
+            .card{max-width:430px;padding:30px 26px;border-radius:12px;box-shadow:none}
+            h2{font-size:25px}
         }
-        @media (max-width: 380px) {
-            .brand { padding: 20px; }
-            h1 { font-size: 24px; }
-            .card { padding: 24px 18px; }
-            .form-side { padding: 20px 12px 32px; }
-        }
-        @media (max-width: 599.98px) {
-            .brand { padding: 16px; gap: 12px; }
-            .logo-full { display: none; }
-            .logo-compact { display: flex; align-items: center; gap: 8px; }
-            .logo-compact img { width: 28px; height: 28px; padding: 3px; border-radius: 4px; background: #fff; }
-            .logo-compact strong { color: #fff; font: 700 18px/1 Corbel, Calibri, "Segoe UI", Arial, sans-serif; letter-spacing: .01em; }
-            .brand-copy::before { display: none; }
-            .brand-copy::after { content: ''; display: block; width: 32px; height: 3px; margin-top: 12px; background: var(--gold); }
-            h1 { font-size: 22px; }
-            .form-side { padding: 16px; }
-            .card { padding: 20px; }
-            h2 { font-size: 22px; }
-            .register a { min-height: 44px; display: inline-flex; align-items: center; }
+        @media (max-width:599.98px){
+            .brand{padding:16px}
+            .logo-full{display:none}
+            .logo-compact{display:flex;align-items:center;gap:10px}
+            .logo-compact img{width:30px;height:30px;padding:3px;border-radius:5px;background:#fff}
+            .logo-compact strong{color:#fff;font:700 19px/1 Corbel, Calibri, "Segoe UI", Arial, sans-serif;letter-spacing:.01em}
+            .brand-copy::before{display:none}
+            .brand-copy::after{content:"";display:block;width:32px;height:3px;margin-top:12px;background:var(--gold)}
+            h1{font-size:21px}
+            .form-side{padding:16px}
+            .card{padding:24px 20px}
+            h2{font-size:22px}
+            .register a{min-height:44px;display:inline-flex;align-items:center}
+            .text-input{font-size:16px}
         }
     </style>
+
+<link rel="stylesheet" href="{{ asset('css/pnmg-ui.css') }}">
 </head>
 <body>
 <main>

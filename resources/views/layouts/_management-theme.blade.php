@@ -103,4 +103,170 @@
     .nav-group-links a,.sidebar-logout{min-height:44px}
     .account-profile-link,.account-logout,.pnmg-pagination a,.pnmg-pagination li>span{min-height:44px}
 }
+
+/* ===== PNMG — finition visuelle globale ===== */
+:root{
+    --pnmg-shadow-1: 0 1px 2px rgba(38, 70, 83, .05);
+    --pnmg-shadow-2: 0 14px 34px rgba(38, 70, 83, .08);
+    --pnmg-ring: 0 0 0 3px rgba(8, 122, 90, .14);
+}
+
+body { font-size: 14.5px; -webkit-font-smoothing: antialiased; }
+
+/* --- Navigation latérale --- */
+.sidebar { background: var(--dark); }
+.sidebar .brand { margin: 0 4px 22px; padding: 0 4px 20px; border-bottom: 1px solid rgba(255, 255, 255, .12); }
+.sidebar .brand img { display: block; width: 184px; height: auto; }
+.side-nav { gap: 2px; }
+.side-nav a, .side-nav .nav-soon { min-height: 42px; border-radius: 7px; color: #cfe1dd; font-size: 13.5px; transition: background-color .15s ease, color .15s ease; }
+.side-nav a:hover, .side-nav .nav-soon:hover { background: rgba(255, 255, 255, .07); color: #fff; }
+.side-nav a.active { background: rgba(255, 255, 255, .09); color: #fff; font-weight: 700; }
+.side-nav a.active:hover { background: rgba(255, 255, 255, .12); }
+.nav-group-title { color: #93bdb1; font-size: 10.5px; letter-spacing: .11em; }
+.nav-group-links a { min-height: 38px; }
+.offre-menu summary { border-radius: 7px; transition: background-color .15s ease; }
+.offre-menu summary:hover { background: rgba(255, 255, 255, .07); }
+.nav-soon small { font-size: 8.5px; letter-spacing: .06em; }
+.sidebar-footer { margin-top: 10px; padding: 14px 4px 0; border-top-color: rgba(255, 255, 255, .14); }
+.sidebar-logout { border-radius: 7px; font-size: 12.5px; }
+.sidebar-logout:hover { background: rgba(255, 255, 255, .08); }
+
+/* --- Barre supérieure --- */
+.topbar { min-height: 68px; padding: 0 32px; background: #fff; border-bottom: 1px solid var(--border); box-shadow: 0 1px 0 rgba(38, 70, 83, .03); }
+.topbar-title { color: #5f7076; font-size: 13px; letter-spacing: .01em; }
+.topbar form[role=search] { max-width: 420px; }
+.topbar input { height: 40px; padding: 9px 14px; border: 1px solid transparent; border-radius: 9px; background: #f4f7f6; font-size: 13.5px; transition: background-color .16s ease, border-color .16s ease, box-shadow .16s ease; }
+.topbar input:hover { background: #eff4f2; }
+.topbar input:focus { background: #fff; border-color: var(--green); outline: none; box-shadow: var(--pnmg-ring); }
+.topbar input::placeholder { color: #8b9a9f; }
+
+/* --- Zone de contenu --- */
+.content { max-width: 1360px; padding: 34px 32px 56px; }
+.content .page-title h1, .content .dashboard-heading h1 { font-size: 28px; letter-spacing: -.03em; }
+.content .page-title p, .content .dashboard-heading p { font-size: 13.5px; line-height: 1.6; }
+.dashboard-heading .eyebrow { margin-bottom: 8px; font-size: 10.5px; letter-spacing: .13em; }
+
+/* --- Cartes et panneaux --- */
+.content :is(.panel, .dashboard-card, .company-panel, .company-form-card, .agency-card, .employee-card, .fleet-card, .doc-card, .agency-form-card, .employee-form, .fleet-form, .doc-form, .summary-card) {
+    border: 1px solid #e2e9e6;
+    border-radius: 12px;
+    box-shadow: var(--pnmg-shadow-1);
+}
+.content :is(.card-head, .agency-card-head, .employee-card-head, .fleet-card-head, .doc-card-head) { padding: 18px 20px; }
+.content :is(.card-head, .agency-card-head, .employee-card-head, .fleet-card-head, .doc-card-head) h2 { font-size: 16.5px; }
+.content :is(.card-head a, .table-action) { font-size: 13px; }
+.content :is(.empty, .empty-state, .empty-row, .doc-empty) { padding: 36px 20px; font-size: 13.5px; }
+
+/* --- Indicateurs --- */
+.content :is(.metric, .summary-card, .agency-stat, .employee-stat, .fleet-stat, .doc-stat) { border-radius: 11px; }
+.content .metric { padding: 20px; }
+.content .metric-label { color: #64747a; font-size: 10.5px; font-weight: 800; letter-spacing: .07em; }
+.content .metric-value { font-size: 30px; line-height: 1.1; }
+.content :is(.metric-note, .summary-note) { font-size: 11.5px; }
+.content .metric.success { border-top: 3px solid var(--green); }
+.content .metric.warning { border-top: 3px solid var(--gold); }
+
+/* --- Boutons --- */
+.content :is(.btn, .button) {
+    min-height: 42px;
+    padding: 0 16px;
+    border-radius: 8px;
+    font-size: 13.5px;
+    font-weight: 700;
+    box-shadow: none;
+    transition: background-color .16s ease, border-color .16s ease, color .16s ease;
+}
+.content :is(.btn, .button).secondary { border-color: #ccd8d4; background: #fff; color: var(--text); }
+.content :is(.btn, .button).secondary:hover { background: var(--bg); border-color: #b9ccc5; }
+.content :is(.btn, .button).danger { background: var(--danger-text); color: #fff; }
+.content :is(.btn, .button).warning { background: var(--warning); color: #3c2a0d; }
+
+/* --- Formulaires --- */
+.content label { margin-bottom: 6px; color: #2c4a56; font-size: 12.5px; font-weight: 700; }
+.content :is(input:not([type=checkbox]):not([type=radio]), select, textarea) {
+    min-height: 42px;
+    padding: 9px 12px;
+    border: 1px solid #c7d3cf;
+    border-radius: 8px;
+    background: #fff;
+    font-size: 14px;
+    transition: border-color .16s ease, box-shadow .16s ease;
+}
+.content :is(input, select, textarea):hover { border-color: #aebfba; }
+.content :is(input, select, textarea):focus { border-color: var(--green); outline: none; box-shadow: var(--pnmg-ring); }
+.content :is(input, select, textarea)[aria-invalid=true] { border-color: var(--danger); }
+.content :is(input, select, textarea)[aria-invalid=true]:focus { box-shadow: 0 0 0 3px rgba(230, 57, 70, .12); }
+.content :is(.field-error-message, .agency-error, .employee-error, .fleet-error, .doc-error, .field-error) { font-size: 12px; }
+.content .filters, .content :is(.company-filters, .agency-filters, .employee-filters, .fleet-filters, .doc-filters) { border-radius: 10px; }
+
+/* --- Messages --- */
+.flash { padding: 12px 15px; border: 1px solid #c6e3d8; border-left: 3px solid var(--green); border-radius: 8px; background: var(--pale); color: #1d4f40; font-size: 13.5px; }
+.errors { padding: 12px 15px; border: 1px solid #f0c9cc; border-left: 3px solid var(--danger); border-radius: 8px; background: var(--danger-pale); color: var(--danger-text); font-size: 13.5px; }
+
+/* --- Tableaux --- */
+.content table th { padding: 11px 12px; background: #f6f9f8; color: #5c6c72; font-size: 10.5px; font-weight: 800; letter-spacing: .07em; white-space: nowrap; }
+.content table td { padding: 13px 12px; border-bottom: 1px solid #edf1ef; font-size: 13.5px; }
+.content tbody tr:hover { background: #f8fbfa; }
+.content table td small, .content table th small { color: var(--muted); font-size: 11.5px; }
+.content :is(.table-wrap, .dashboard-table-wrap, .suspended-table-wrap) { border-radius: 0 0 12px 12px; }
+
+/* --- Badges et statuts --- */
+.content :is(.badge, .role-badge, .status-pill, .doc-status, .review-status, .scope-badge) {
+    padding: 4px 9px;
+    border-radius: 999px;
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: .04em;
+}
+.content :is(.status-active, .status-valid, .status-validated, .health.valid, .doc-status.valid, .review-status.approved, .agency-status.active, .employee-status.active, .fleet-badge.active, .fleet-badge.available) { background: #e4f3ed; color: #07604a; }
+.content :is(.status-pending, .status-to_renew, .doc-status.to_renew, .health.renew, .fleet-badge.unavailable) { background: #fdf4e1; color: #765715; border: 1px solid #eddaa6; }
+.content :is(.status-suspended, .status-rejected, .status-expired, .doc-status.expired, .health.expired) { background: #fdeeee; color: #9e2f38; }
+.content :is(.agency-status.inactive, .employee-status.inactive, .fleet-badge.inactive) { background: #eef1f2; color: #5f7076; }
+
+/* --- Menu de compte --- */
+.account-trigger { padding: 6px 9px; border-radius: 9px; border-color: #e0e7e4; transition: border-color .16s ease, box-shadow .16s ease; }
+.account-trigger:hover, .account-trigger[aria-expanded=true] { border-color: #b9d3c9; box-shadow: 0 0 0 3px #eef6f2; }
+.account-avatar { border-radius: 8px; }
+.account-dropdown { border-radius: 12px; border-color: #e2e9e6; box-shadow: 0 16px 40px rgba(23, 63, 52, .14); }
+.account-dropdown-head { background: var(--dark); }
+.account-details > div { border-bottom-color: #eef2f0; }
+.account-actions { background: #f6f9f8; }
+.account-profile-link, .account-logout { border-radius: 7px; }
+
+/* --- Notifications --- */
+.notification-center { border-radius: 10px; border-color: #f0c9cc; border-left-width: 3px; }
+.notification-entry { border-radius: 7px; background: #fffafa; }
+.notification-entry:hover { background: #fdf4f4; }
+
+/* --- Pagination --- */
+.pnmg-pagination a, .pnmg-pagination li>span { border-radius: 7px; font-size: 12.5px; }
+.pnmg-pagination a:hover { background: #f4f8f6; }
+
+/* --- Ajustements responsives --- */
+@media (max-width: 1200px) {
+    .content { padding: 28px 24px 48px; }
+}
+@media (max-width: 1023.98px) {
+    .topbar { padding: 12px 18px; min-height: 64px; }
+    .sidebar .brand { margin-bottom: 16px; }
+}
+@media (max-width: 760px) {
+    .content { padding: 24px 16px 40px; }
+    .content .page-title h1, .content .dashboard-heading h1 { font-size: 24px; }
+    .content :is(.card-head, .agency-card-head, .employee-card-head, .fleet-card-head, .doc-card-head) { padding: 16px; }
+    .content .metric { padding: 17px; }
+}
+
+</style>
+<style>
+/* Compatibilité mobile : conserve la barre supérieure sombre et les cibles tactiles. */
+@media (max-width: 599.98px) {
+    .topbar { height: 56px; min-height: 56px; padding: 0 16px; background: var(--dark); box-shadow: none; }
+    .content { padding: 24px 16px 40px; }
+    .content :is(input:not([type=checkbox]):not([type=radio]), select, textarea) { font-size: 16px; }
+    .nav-group-links a, .sidebar-logout { min-height: 44px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .side-nav a, .topbar input, .account-trigger, .feature-card, .content :is(.btn, .button) { transition: none; }
+}
 </style>

@@ -32,6 +32,7 @@
     <a @class(['active' => request()->routeIs('lines.*')]) href="{{ route('lines.index') }}">Lignes</a>
     <a @class(['active' => request()->routeIs('departures.*')]) href="{{ route('departures.index') }}">Départs</a>
     <a @class(['active' => request()->routeIs('search.*')]) href="{{ route('search.index') }}">Recherche</a>
+            <a href="{{ route('reductions.index') }}">Réductions</a>
 </details>
 <style>.offre-menu summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px}.offre-menu summary::-webkit-details-marker{display:none}.offre-menu a{display:block;padding:8px 12px 8px 44px;border-radius:8px}</style>
 @endcan

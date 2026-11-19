@@ -48,7 +48,7 @@ class PublicRegistrationController extends Controller
             'province' => ['nullable', Rule::in(array_keys(config('geography')))],
             'city' => ['nullable', 'required_with:province', 'string', 'max:100', new LocalityInProvince],
             'company_email' => ['required', 'email', 'max:150', 'unique:companies,email'],
-            'phone' => ['required', 'string', 'max:30'],
+            'phone' => ['required', 'string', 'max:30', new \App\Rules\TelephoneGabon],
             'terms' => ['accepted'],
         ], [
             'rccm.required' => 'Le numéro RCCM est obligatoire.',

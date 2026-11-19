@@ -26,7 +26,7 @@ class StoreFareRequest extends FormRequest
         return [
             'line_id' => ['required', 'integer', 'exists:lines,id'],
             'amount' => ['required', 'numeric', 'min:0.01'],
-            'fare_class' => ['nullable', 'string', 'max:50'],
+            'fare_class' => ['required', 'in:economique,standard,premiere'],
         ];
     }
 

@@ -133,4 +133,51 @@
         <a class="btn-action primary" href="{{ route('fares.create',$line) }}">Définir un tarif <x-lucide-plus-circle aria-hidden="true"/></a>
     </div>
 </div>
+
+<div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px;margin-top:20px">
+    <h2 style="margin:0 0 4px;font-size:18px">Tarifs de la ligne</h2>
+    @can('update', $line)<a class="btn-action primary" href="{{ route('fares.grille', $line) }}" style="float:right">Définir les prix</a>@endcan
+    <p style="margin:0 0 16px;color:#64748b;font-size:13px">Un prix par classe. Le prix se remplit automatiquement dans le formulaire.</p>
+    @foreach(config('offre.classes') as $code => $libelle)
+        @php($tarif = $line->fares->firstWhere('fare_class', $code))
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-top:1px solid #f1f5f9">
+            <div>
+                <strong>{{ $libelle }}</strong>
+                <div style="color:#64748b;font-size:13px">{{ $tarif ? number_format((float) $tarif->amount, 0, ',', ' ').' FCFA' : 'Tarif non défini' }}</div>
+            </div>
+            @can('update', $line)
+                @if($tarif)
+                    <a class="btn-action secondary" href="{{ route('fares.edit', [$line, $tarif]) }}">Modifier</a>
+                @else
+                    <a class="btn-action primary" href="{{ route('fares.create', $line) }}?classe={{ $code }}">Définir le tarif</a>
+                @endif
+            @endcan
+        </div>
+    @endforeach
+</div>
+
+<section class="pnmg-card" style="margin-top:20px">
+    <h2 style="margin:0 0 4px">Trajets et prix</h2>
+    <p class="muted" style="margin:0 0 14px">Le trajet complet garde son tarif. Tout trajet partiel coûte 50 % du tarif de sa classe. Renseignez un âge pour appliquer la réduction.</p>
+    <form method="GET" style="display:flex;gap:10px;align-items:end;margin-bottom:14px">
+        <div><label for="age">Âge du passager</label><input id="age" type="number" name="age" min="0" max="120" value="{{ $age }}"></div>
+        <button class="btn" type="submit">Calculer</button>
+        <a class="btn-action secondary" href="{{ route('reductions.index') }}">Gérer les réductions</a>
+    </form>
+    <table>
+        <thead><tr><th>Trajet</th>@foreach($classes as $libelle)<th>{{ $libelle }}</th>@endforeach</tr></thead>
+        <tbody>
+        @forelse($trajets as $t)
+            <tr>
+                <td>{{ $t['de'] }} → {{ $t['a'] }}</td>
+                @foreach($classes as $code => $libelle)
+                    <td>{{ $t['prix'][$code] !== null ? number_format($t['prix'][$code], 0, ',', ' ').' FCFA' : '—' }}</td>
+                @endforeach
+            </tr>
+        @empty
+            <tr><td colspan="4">Ajoutez au moins deux arrêts à la ligne pour voir les trajets.</td></tr>
+        @endforelse
+        </tbody>
+    </table>
+</section>
 @endsection

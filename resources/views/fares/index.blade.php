@@ -29,7 +29,7 @@
             @forelse($fares as $fare)
                 <tr>
                     <td class="fare-amount">{{ number_format($fare->amount, 2, ',', ' ').' €' }}</td>
-                    <td class="fare-class">{{ $fare->fare_class ?: '—' }}</td>
+                    <td class="fare-class">{{ $fare->fare_class ?: '—' }}</td><td>{{ config('offre.categories.'.$fare->vehicle_category, $fare->vehicle_category) }}</td>
                     <td>
                         @if($fare->isActive())
                             <span class="fare-status active"><x-lucide-check-circle class="w-3 h-3" /> Actif</span>

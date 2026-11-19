@@ -1,51 +1,6 @@
 @extends('layouts.app')
-@section('title', 'Tableau de bord Offre - PNMG')
-
-@push('styles')
-<style>
-    .dashboard-offre-head{margin-bottom:28px}.dashboard-offre-head h1{margin:6px 0 0;font-size:32px}.dashboard-kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;margin-bottom:24px}.kpi-card{padding:24px;background:#fff;border:1px solid #e2e8f0;border-radius:13px;box-shadow:0 1px 3px #0f172a12}.kpi-label{margin-bottom:8px;color:#64748b;font-size:12px;font-weight:700;text-transform:uppercase}.kpi-value{font-size:30px;font-weight:800}.kpi-sub{color:#64748b;font-size:13px}.dashboard-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}.dashboard-card{padding:24px;background:#fff;border:1px solid #e2e8f0;border-radius:13px;box-shadow:0 1px 3px #0f172a12}.dashboard-card h2{margin:0 0 16px;font-size:16px}.dashboard-list{list-style:none;margin:0;padding:0}.dashboard-list li{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid #e2e8f0}.dashboard-list li:last-child{border-bottom:none}.dashboard-list li .item-label{font-size:14px}.dashboard-list li .item-value{font-weight:700}
-    @media(max-width:760px){.dashboard-kpis{grid-template-columns:1fr}.dashboard-cards{grid-template-columns:1fr}}
-</style>
-@endpush
-
+@section('title','Tableau de bord de l’offre - PNMG')
+@push('styles')@include('layouts._dashboard-design')@endpush
 @section('content')
-<div class="dashboard-offre-head">
-    <div>
-        <div class="breadcrumb">Offre de transport › Tableau de bord</div>
-        <h1>Tableau de bord de l’offre</h1>
-        <div class="muted">Aperçu de l’offre de transport déclarée.</div>
-    </div>
-</div>
-
-<div class="dashboard-kpis">
-    <div class="kpi-card">
-        <div class="kpi-label">Lignes</div>
-        <div class="kpi-value">{{ $activeLines }}</div>
-        <div class="kpi-sub">lignes actives sur {{ $totalLines }}</div>
-    </div>
-    <div class="kpi-card">
-        <div class="kpi-label">Départs à venir</div>
-        <div class="kpi-value">{{ $scheduledDepartures }}</div>
-        <div class="kpi-sub">départs programmés</div>
-    </div>
-</div>
-
-<div class="dashboard-cards">
-    <div class="dashboard-card">
-        <h2>Aperçu des lignes</h2>
-        <ul class="dashboard-list">
-            <li><span class="item-label">Total lignes</span><span class="item-value">{{ $totalLines }}</span></li>
-            <li><span class="item-label">Lignes actives</span><span class="item-value" style="color:var(--green)">{{ $activeLines }}</span></li>
-            <li><span class="item-label">Lignes inactives</span><span class="item-value" style="color:#64748b">{{ $totalLines - $activeLines }}</span></li>
-        </ul>
-    </div>
-    <div class="dashboard-card">
-        <h2>Aperçu des départs</h2>
-        <ul class="dashboard-list">
-            <li><span class="item-label">Total départs</span><span class="item-value">{{ $totalDepartures }}</span></li>
-            <li><span class="item-label">Départs programmés</span><span class="item-value" style="color:var(--green)">{{ $scheduledDepartures }}</span></li>
-            <li><span class="item-label">Départs annulés</span><span class="item-value" style="color:#64748b">{{ $totalDepartures - $scheduledDepartures }}</span></li>
-        </ul>
-    </div>
-</div>
+<div class="dashboard-page"><div class="dashboard-hero"><div><p class="dashboard-eyebrow">Offre de transport</p><h1>Tableau de bord de l’offre</h1><p>Suivez les lignes et les départs déclarés par votre compagnie.</p></div><a class="btn" href="{{ route('lines.create') }}">Nouvelle ligne</a></div><div class="dashboard-kpis"><article class="dashboard-kpi"><p class="dashboard-kpi-label">Lignes actives</p><strong class="dashboard-kpi-value">{{ $activeLines }}</strong><p class="dashboard-kpi-note">sur {{ $totalLines }} ligne(s)</p></article><article class="dashboard-kpi"><p class="dashboard-kpi-label">Départs à venir</p><strong class="dashboard-kpi-value">{{ $scheduledDepartures }}</strong><p class="dashboard-kpi-note">programmés</p></article><article class="dashboard-kpi"><p class="dashboard-kpi-label">Total départs</p><strong class="dashboard-kpi-value">{{ $totalDepartures }}</strong><p class="dashboard-kpi-note">à partir d’aujourd’hui</p></article><article class="dashboard-kpi"><p class="dashboard-kpi-label">À vérifier</p><strong class="dashboard-kpi-value">{{ $totalDepartures - $scheduledDepartures }}</strong><p class="dashboard-kpi-note">annulés ou autres statuts</p></article></div><div class="dashboard-diagrams"><section class="dashboard-chart-card"><h2>État de l’offre</h2><p>Répartition des lignes et des départs</p><div class="dashboard-bars"><div class="dashboard-bar-line"><span>Lignes actives</span><div class="dashboard-bar-track"><div class="dashboard-bar-fill" style="width:{{ $totalLines ? round($activeLines/$totalLines*100) : 0 }}%"></div></div><strong>{{ $activeLines }}</strong></div><div class="dashboard-bar-line"><span>Lignes inactives</span><div class="dashboard-bar-track"><div class="dashboard-bar-fill gold" style="width:{{ $totalLines ? round(($totalLines-$activeLines)/$totalLines*100) : 0 }}%"></div></div><strong>{{ $totalLines-$activeLines }}</strong></div><div class="dashboard-bar-line"><span>Départs programmés</span><div class="dashboard-bar-track"><div class="dashboard-bar-fill orange" style="width:{{ $totalDepartures ? round($scheduledDepartures/$totalDepartures*100) : 0 }}%"></div></div><strong>{{ $scheduledDepartures }}</strong></div></div></section><section class="dashboard-chart-card"><h2>Programmation</h2><p>Lecture rapide des départs à venir</p><div class="dashboard-donut-row"><div class="dashboard-donut" style="background:conic-gradient(var(--green) 0 {{ $totalDepartures ? round($scheduledDepartures/$totalDepartures*100) : 0 }}%, var(--gold) 0 100%);"></div><div class="dashboard-legend"><span><span><i></i>Programmés</span><strong>{{ $scheduledDepartures }}</strong></span><span class="gold"><span><i></i>Autres statuts</span><strong>{{ $totalDepartures-$scheduledDepartures }}</strong></span></div></div></section></div><div class="dashboard-layout"><section class="dashboard-card"><div class="dashboard-card-head"><div><h2>Gestion des lignes</h2><p>Structure de l’offre déclarée</p></div><a href="{{ route('lines.index') }}">Ouvrir →</a></div><div class="dashboard-card-body dashboard-list"><div class="dashboard-list-item"><strong>Total lignes</strong><strong>{{ $totalLines }}</strong></div><div class="dashboard-list-item"><strong>Lignes actives</strong><strong class="good">{{ $activeLines }}</strong></div><div class="dashboard-list-item"><strong>Lignes inactives</strong><strong class="dashboard-muted">{{ $totalLines - $activeLines }}</strong></div></div></section><section class="dashboard-card"><div class="dashboard-card-head"><div><h2>Gestion des départs</h2><p>Programmation des trajets</p></div><a href="{{ route('departures.index') }}">Ouvrir →</a></div><div class="dashboard-card-body dashboard-list"><div class="dashboard-list-item"><strong>Départs à venir</strong><strong>{{ $totalDepartures }}</strong></div><div class="dashboard-list-item"><strong>Programmés</strong><strong class="good">{{ $scheduledDepartures }}</strong></div><div class="dashboard-list-item"><strong>Autres statuts</strong><strong class="dashboard-muted">{{ $totalDepartures - $scheduledDepartures }}</strong></div></div></section></div></div>
 @endsection

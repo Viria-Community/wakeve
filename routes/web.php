@@ -16,6 +16,8 @@ use App\Http\Controllers\DepartureController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\DocumentReviewController;
 use App\Http\Controllers\FareController;
+use App\Http\Controllers\AgeReductionController;
+use App\Http\Controllers\FareGridController;
 use App\Http\Controllers\EmployeeAccountController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\FleetUnitController;
@@ -110,15 +112,22 @@ Route::middleware(['auth', 'active'])->group(function () {
         Route::patch('/offre/departs/{departure}/annuler', [DepartureController::class, 'cancel'])->name('departures.cancel');
 
         Route::get('/offre/lignes/{line}/tarifs', [FareController::class, 'index'])->name('fares.index');
+        Route::get('/offre/lignes/{line}/tarifs/grille', [FareGridController::class, 'show'])->name('fares.grille');
+        Route::post('/offre/lignes/{line}/tarifs/grille', [FareGridController::class, 'save'])->name('fares.grille.save');
         Route::get('/offre/lignes/{line}/tarifs/creer', [FareController::class, 'create'])->name('fares.create');
         Route::post('/offre/lignes/{line}/tarifs', [FareController::class, 'store'])->name('fares.store');
         Route::get('/offre/lignes/{line}/tarifs/{fare}/modifier', [FareController::class, 'edit'])->name('fares.edit');
         Route::put('/offre/lignes/{line}/tarifs/{fare}', [FareController::class, 'update'])->name('fares.update');
         Route::patch('/offre/lignes/{line}/tarifs/{fare}/statut', [FareController::class, 'updateStatus'])->name('fares.updateStatus');
 
+        Route::get('/offre/reductions', [AgeReductionController::class, 'index'])->name('reductions.index');
+        Route::post('/offre/reductions', [AgeReductionController::class, 'store'])->name('reductions.store');
+        Route::patch('/offre/reductions/{reduction}/statut', [AgeReductionController::class, 'toggle'])->name('reductions.toggle');
+
         Route::get('/offre/recherche', [SearchController::class, 'index'])->name('search.index');
 
         Route::get('/offre/tableau-de-bord', [DashboardOffreController::class, 'index'])->name('dashboard-offre.index');
+        Route::get('/offre/tableau-de-bord/donnees', [DashboardOffreController::class, 'donnees'])->name('dashboard-offre.donnees');
 
         Route::get('/documents', [DocumentController::class, 'index'])->name('documents.index');
         Route::get('/documents/compagnies/{company}', [DocumentController::class, 'companyDocuments'])->name('documents.companies.show');

@@ -1,7 +1,6 @@
 @extends('layouts.app')
-@section('title', 'Mon espace - PNMG')
+@section('title','Tableau de bord des rôles - PNMG')
+@push('styles')@include('layouts._dashboard-design')@endpush
 @section('content')
-<h1>Bienvenue, {{ auth()->user()->name }}</h1>
-<p>Votre rôle : <strong>{{ auth()->user()->customRole?->name ?? 'Accès restreint' }}</strong>.</p>
-<p>Le menu présente les modules autorisés pour votre compte.</p>
+<div class="dashboard-page"><div class="dashboard-hero"><div><p class="dashboard-eyebrow">Accès métier</p><h1>Mon espace PNMG</h1><p>Rôle attribué : <strong>{{ auth()->user()->customRole?->name ?? 'Accès restreint' }}</strong></p></div><div class="dashboard-date">{{ now()->locale('fr')->translatedFormat('l d F Y') }}</div></div><div class="dashboard-layout"><section class="dashboard-card"><div class="dashboard-card-head"><div><h2>Modules autorisés</h2><p>Les accès disponibles apparaissent dans le menu latéral.</p></div></div><div class="dashboard-card-body"><div class="dashboard-alert dashboard-alert-info">Votre rôle détermine les écrans et actions accessibles dans la plateforme.</div><p class="dashboard-muted" style="margin:16px 0 0;font-size:13px">Utilisez le menu de gauche pour ouvrir un module autorisé, consulter les listes et gérer les fiches de votre périmètre.</p></div></section><section class="dashboard-card"><div class="dashboard-card-head"><h2>Compte</h2></div><div class="dashboard-card-body"><div class="dashboard-list"><div class="dashboard-list-item"><div><strong>Utilisateur</strong><small>{{ auth()->user()->email }}</small></div></div><a class="btn secondary" href="{{ route('profile.edit') }}">Gérer mon profil</a></div></div></section></div></div>
 @endsection

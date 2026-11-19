@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 class DocumentRejectedNotification extends Notification
@@ -20,7 +21,19 @@ class DocumentRejectedNotification extends Notification
     /** @return array<int, string> */
     public function via(object $notifiable): array
     {
-        return ['database'];
+        return ['mail', 'database'];
+    }
+
+    public function toMail(object $notifiable): MailMessage
+    {
+        return (new MailMessage)
+            ->subject('Un document de votre dossier doit être corrigé')
+            ->greeting('Bonjour,')
+            ->line("Le document « {$this->documentType} » de votre dossier a été refusé.")
+            ->line("Motif : {$this->reason}")
+            ->line('Téléversez un nouveau document, puis demandez un nouvel examen depuis votre espace.')
+            ->action('Voir mon dossier', $this->url)
+            ->salutation('Plateforme Nationale de Mobilité du Gabon');
     }
 
     /** @return array<string, int|string> */
