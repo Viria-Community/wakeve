@@ -10,3 +10,4 @@
 /storage/*.key
 .idea
 .vscode
+/sauvegarde_pnmg.sql
