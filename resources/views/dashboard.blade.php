@@ -1,4 +1,5 @@
 @extends('layouts.app')
+@section('body-class', 'pnmg-dash')
 @section('title','Tableau de bord gestionnaire - PNMG')
 @push('styles')@include('layouts._dashboard-design')@endpush
 @section('content')

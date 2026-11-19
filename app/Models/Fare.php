@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -12,8 +13,11 @@ class Fare extends Model
     protected $fillable = [
         'amount',
         'fare_class',
+        'travel_class',
         'status',
         'line_id',
+        'origin_place_id',
+        'destination_place_id',
     ];
 
     protected function casts(): array
@@ -28,7 +32,17 @@ class Fare extends Model
         return $this->belongsTo(Line::class);
     }
 
-    public function scopeActive($query)
+    public function originPlace(): BelongsTo
+    {
+        return $this->belongsTo(Place::class, 'origin_place_id');
+    }
+
+    public function destinationPlace(): BelongsTo
+    {
+        return $this->belongsTo(Place::class, 'destination_place_id');
+    }
+
+    public function scopeActive(Builder $query): Builder
     {
         return $query->where('status', 'active');
     }

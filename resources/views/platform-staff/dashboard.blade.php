@@ -1,4 +1,5 @@
 @extends('layouts.admin')
+@section('body-class', 'pnmg-dash')
 @section('title','Tableau de bord du personnel PNMG')
 @push('styles')@include('layouts._dashboard-design')@endpush
 @section('content')

@@ -1,4 +1,5 @@
 @extends('layouts.app')
+@section('body-class', 'pnmg-dash')
 @section('title','Tableau de bord des rôles - PNMG')
 @push('styles')@include('layouts._dashboard-design')@endpush
 @section('content')

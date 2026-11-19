@@ -1,0 +1,46 @@
+/* PNMG — fiches de détail (compagnie, agence, employé, véhicule, ligne, départ, documents, activité, compte).
+   Palette de la plateforme : vert pétrole, émeraude, vert clair, or. */
+
+/* En-tête de fiche : bandeau émeraude avec le titre et les actions */
+main .fiche-head,main .detail-head,main .record-head,main .show-head{position:relative;display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap;padding:26px 30px;border-radius:22px;background:linear-gradient(135deg,#0b3b2f 0%,#087A5A 62%,#0f5a4a 100%);color:#FFFFFF;box-shadow:0 18px 40px rgba(8,122,90,.22);overflow:hidden;margin-bottom:22px}
+main .fiche-head::after,main .detail-head::after,main .record-head::after{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;border:1px solid rgba(233,196,106,.35);pointer-events:none}
+main .fiche-head h1,main .detail-head h1,main .record-head h1,main .show-head h1{color:#FFFFFF;margin:0 0 6px;font-size:28px}
+main .fiche-head h1::after,main .detail-head h1::after,main .record-head h1::after,main .show-head h1::after{display:none}
+main .fiche-head .breadcrumb,main .detail-head .breadcrumb,main .record-head .breadcrumb{color:rgba(255,255,255,.75)}
+main .fiche-head .breadcrumb a,main .detail-head .breadcrumb a{color:#E9C46A}
+main .fiche-head .muted,main .detail-head .muted,main .record-head .muted{color:rgba(255,255,255,.8)}
+main .fiche-head .btn,main .detail-head .btn,main .record-head .btn{background:#E9C46A!important;color:#102E29!important;box-shadow:0 10px 22px rgba(0,0,0,.2)}
+main .fiche-head .btn.secondary,main .detail-head .btn.secondary,main .record-head .btn.secondary{background:transparent!important;color:#FFFFFF!important;border:1.5px solid rgba(255,255,255,.55)!important}
+
+/* Sections : cartes avec titre à barre dorée */
+main section,main article.card,main .detail-card,main .info-card{background:#FFFFFF;border:1px solid #DCE3E0;border-radius:20px;padding:24px 26px;margin-bottom:18px;box-shadow:0 12px 28px rgba(36,70,83,.07);position:relative}
+main section::before{content:"";position:absolute;left:0;top:18px;width:4px;height:28px;border-radius:0 4px 4px 0;background:linear-gradient(180deg,#087A5A,#E9C46A)}
+main section>h2,main .detail-card>h2,main .info-card>h2{font-size:18px;color:#244653;margin:0 0 16px;padding-left:12px}
+
+/* Paires libellé / valeur en tuiles */
+main dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:0}
+main dl>div{background:#F4FAF7;border:1px solid #DCE3E0;border-radius:14px;padding:14px 16px}
+main dl dt{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#4B5D66;margin:0 0 6px}
+main dl dd{margin:0;font-size:16px;font-weight:700;color:#1B2A2F;word-break:break-word}
+
+/* Documents : tuiles avec statut */
+main .doc-card,main .document-card,main .doc-item{display:flex;justify-content:space-between;align-items:center;gap:14px;background:#FFFFFF;border:1px solid #DCE3E0;border-left:5px solid #087A5A;border-radius:14px;padding:14px 18px;margin-bottom:12px;transition:transform .2s ease,box-shadow .2s ease}
+main .doc-card:hover,main .document-card:hover,main .doc-item:hover{transform:translateY(-2px);box-shadow:0 14px 28px rgba(36,70,83,.12)}
+main .doc-card.is-expired,main .document-card.is-expired{border-left-color:#B42318}
+main .doc-card.is-pending,main .document-card.is-pending{border-left-color:#E9A23B}
+
+/* Actions de fiche */
+main .fiche-actions,main .detail-actions,main .record-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+/* Chronologie d'activité */
+main .timeline,main ol.timeline,main ul.timeline{list-style:none;margin:0;padding:0 0 0 22px;border-left:2px solid #CFE8DC}
+main .timeline li,main ul.timeline li{position:relative;padding:0 0 18px 18px}
+main .timeline li::before{content:"";position:absolute;left:-29px;top:4px;width:12px;height:12px;border-radius:50%;background:#087A5A;box-shadow:0 0 0 4px #E6F5EE}
+
+/* Onglets */
+main .tabs,main .tab-bar{display:inline-flex;gap:6px;padding:6px;background:#EAF5F0;border-radius:14px;margin-bottom:18px}
+main .tabs a,main .tab-bar a{padding:10px 16px;border-radius:10px;color:#244653;font-weight:700;text-decoration:none}
+main .tabs a[aria-current],main .tabs a.active,main .tab-bar a.active{background:#FFFFFF;color:#087A5A;box-shadow:0 6px 14px rgba(36,70,83,.1)}
+
+@media (max-width:700px){main .fiche-head,main .detail-head,main .record-head{padding:20px}main .fiche-head h1,main .detail-head h1,main .record-head h1{font-size:22px}main dl{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){main .doc-card,main .document-card,main .doc-item{transition:none}}

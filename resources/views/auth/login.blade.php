@@ -95,6 +95,7 @@
     </style>
 
 <link rel="stylesheet" href="{{ asset('css/pnmg-ui.css') }}">
+<link rel="stylesheet" href="{{ asset('css/pnmg-connexion.css') }}">
 </head>
 <body>
 <main>

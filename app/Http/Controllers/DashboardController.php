@@ -135,6 +135,7 @@ class DashboardController extends Controller
                 + FleetDocument::query()->whereDate('created_at', today())->count(),
             'suspendedCompanies' => $suspendedCompanies,
             'recentAuditLogs' => AuditLog::query()->with(['user', 'company'])->latest()->take(8)->get(),
+            'registrationSeries' => $this->registrationSeries(),
         ]);
     }
 
@@ -195,5 +196,20 @@ class DashboardController extends Controller
             ->sortBy('valid_until')
             ->take(8)
             ->values();
+    }
+
+    private function registrationSeries(): array
+    {
+        $comptes = Company::query()
+            ->where('created_at', '>=', now()->subDays(29)->startOfDay())
+            ->selectRaw('DATE(created_at) AS jour, COUNT(*) AS n')
+            ->groupBy('jour')
+            ->pluck('n', 'jour');
+        $serie = [];
+        for ($k = 29; $k >= 0; $k--) {
+            $jour = now()->subDays($k);
+            $serie[] = ['date' => $jour->format('d/m'), 'n' => (int) ($comptes[$jour->toDateString()] ?? 0)];
+        }
+        return $serie;
     }
 }

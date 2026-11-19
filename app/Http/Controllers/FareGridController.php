@@ -6,6 +6,7 @@ use App\Models\Fare;
 use App\Models\Line;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class FareGridController extends Controller
@@ -14,11 +15,32 @@ class FareGridController extends Controller
     {
         $this->autoriser($request, $line);
 
+        $arrets = $line->places()
+            ->orderByPivot('stop_order')
+            ->get();
+
+        $tarifs = $line->fares()
+            ->whereNotNull('origin_place_id')
+            ->whereNotNull('destination_place_id')
+            ->get()
+            ->keyBy(fn ($fare) => implode('-', [
+                $fare->origin_place_id,
+                $fare->destination_place_id,
+                $fare->fare_class,
+            ]));
+
+        $anciensTarifs = $line->fares()
+            ->whereNull('origin_place_id')
+            ->whereNull('destination_place_id')
+            ->get()
+            ->keyBy('fare_class');
+
         return view('fares.grille', [
             'line' => $line,
             'classes' => config('offre.classes'),
-            'grille' => config('offre.grille'),
-            'tarifs' => $line->fares()->get()->keyBy('fare_class'),
+            'arrets' => $arrets,
+            'tarifs' => $tarifs,
+            'anciensTarifs' => $anciensTarifs,
         ]);
     }
 
@@ -28,34 +50,73 @@ class FareGridController extends Controller
 
         $data = $request->validate([
             'montants' => ['required', 'array'],
-            'montants.*' => ['nullable', 'numeric', 'min:0'],
+            'montants.*' => ['array'],
+            'montants.*.*' => ['array'],
+            'montants.*.*.*' => ['nullable', 'numeric', 'min:0'],
         ]);
 
-        foreach (array_keys(config('offre.classes')) as $classe) {
-            $montant = $data['montants'][$classe] ?? null;
+        $arretsIds = $line->places()
+            ->pluck('places.id')
+            ->map(fn ($id) => (int) $id)
+            ->all();
 
-            if ($montant === null || $montant === '') {
-                continue;
+        $classes = array_keys(config('offre.classes'));
+
+        DB::transaction(function () use ($data, $line, $arretsIds, $classes) {
+            foreach ($data['montants'] as $origineId => $destinations) {
+                $origineId = (int) $origineId;
+
+                if (! in_array($origineId, $arretsIds, true)) {
+                    continue;
+                }
+
+                foreach ($destinations as $destinationId => $montants) {
+                    $destinationId = (int) $destinationId;
+
+                    if (
+                        ! in_array($destinationId, $arretsIds, true)
+                        || $origineId === $destinationId
+                    ) {
+                        continue;
+                    }
+
+                    foreach ($montants as $classe => $montant) {
+                        if (
+                            ! in_array($classe, $classes, true)
+                            || $montant === null
+                            || $montant === ''
+                        ) {
+                            continue;
+                        }
+
+                        Fare::updateOrCreate(
+                            [
+                                'line_id' => $line->id,
+                                'origin_place_id' => $origineId,
+                                'destination_place_id' => $destinationId,
+                                'fare_class' => $classe,
+                            ],
+                            [
+                                'amount' => $montant,
+                                'status' => 'active',
+                            ]
+                        );
+                    }
+                }
             }
+        });
 
-            $fare = Fare::where('line_id', $line->id)->where('fare_class', $classe)->first() ?? new Fare();
-            $fare->line_id = $line->id;
-            $fare->fare_class = $classe;
-            $fare->amount = $montant;
-            if (! $fare->exists) {
-                $fare->status = 'active';
-            }
-            $fare->save();
-        }
-
-        return redirect()->route('lines.show', $line)
-            ->with('status', 'Les tarifs de la ligne ont été enregistrés.');
+        return redirect()->route('fares.grille', $line)
+            ->with('status', 'Les tarifs des trajets ont été enregistrés.');
     }
 
     private function autoriser(Request $request, Line $line): void
     {
         $user = $request->user();
-        $autorise = $user->role === 'company_manager' && $user->company_id === $line->company_id;
+
+        $autorise = $user->role === 'company_manager'
+            && $user->company_id === $line->company_id;
+
         abort_unless($autorise, 403);
     }
 }
